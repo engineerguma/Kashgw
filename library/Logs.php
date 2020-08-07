@@ -11,7 +11,7 @@ class Logs {
     function LogRequest($fl, $log, $lv, $id = false) {
         $filext = date('Y_m_d');
 		$logtofile=null;
-		$todays_folder = 'systemlog/t_log/'.$fl.'/' . date('Y_m_d');
+		$todays_folder = 'systemlog/t_log/'.$fl.'/' . date('Y_m');
         $filename = $todays_folder.'/' . $fl . '_' . $filext . '.txt';
 
 	    if (is_dir($todays_folder)) {

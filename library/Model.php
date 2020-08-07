@@ -62,6 +62,12 @@ class Model {
 
 
 
+      function GetSSLInfo($opid) {
+            return $this->db->SelectData("SELECT * FROM ssl_connection WHERE operator_id=:opid", array('opid' => $opid));
+        }
+
+
+
       function GetTransaction($tid) {
             return $this->db->SelectData("SELECT * FROM transaction_history WHERE transaction_id=:tid", array('tid' => $tid));
         }
@@ -169,7 +175,7 @@ class Model {
                 require($req_template);
                 $filled_xml = ${$template};
 
-                $this->log->LogRequest($log_name,"GeneralMerchant:  WriteGeneralXMLFile  ". var_export($filled_xml,true),2);
+                $this->log->LogRequest($log_name,"Model:  WriteGeneralXMLFile  ". var_export($filled_xml,true),2);
 
                 return $filled_xml;
                 }
@@ -177,20 +183,22 @@ class Model {
 
                     function SendByCURL($url, $type ,$xml,$log_name) {
 
-                    $momo_genID = date("ymdhis");
+                  //  $momo_genID = date("ymdhis");
 
-                      $this->log->LogRequest($log_name,"GeneralMerchant:  SendByCURL  beginning url ".$url." Xml". var_export($xml,true),2);
-                        $ch = curl_init();
-                        curl_setopt($ch, CURLOPT_HEADER, 0);
-                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: text/xml'));
-                        curl_setopt($ch, CURLOPT_URL, $url);
-                        curl_setopt($ch, CURLOPT_POST, 1);
-                        curl_setopt($ch, CURLOPT_POSTFIELDS, $xml);
-                        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-                        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-
-                        $content = curl_exec($ch);
+                      $this->log->LogRequest($log_name,"Model:  SendByCURL  beginning url ".$url." Xml". var_export($xml,true),2);
+                      $ch = curl_init();
+                      curl_setopt($ch, CURLOPT_HEADER, 0);
+                      curl_setopt($ch, CURLOPT_VERBOSE, 0);
+                      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                      curl_setopt($ch, CURLOPT_HTTPHEADER,$header);
+                      curl_setopt($ch, CURLOPT_URL,$url);
+                      curl_setopt($ch, CURLOPT_POST, 1);
+                      curl_setopt($ch, CURLOPT_POSTFIELDS, $request_data);
+                      curl_setopt($ch, CURLOPT_FOLLOWLOCATION,true);
+                      curl_setopt($ch, CURLOPT_SSL_VERIFYHOST,false);
+                      curl_setopt($ch, CURLOPT_SSL_VERIFYPEER,false);
+                      curl_setopt($ch, CURLOPT_SSLVERSION, 6);
+                      $content = curl_exec($ch);
                         if (curl_errno($ch) > 0) {
                          $content= curl_error($ch);
                          $this->log->LogRequest($log_name,$content,2);

@@ -6,6 +6,11 @@ class GeneralMerchant extends Model {
         parent::__construct();
     }
 
+     function ProcessCallOperator($transaction,$routing,$log_name){
+
+            $this->operator = new OperatorRequests();
+          return  $this->operator->{$routing['operator_process']}($transaction,$routing,$log_name);
+     }
 
     function MerchantHandler($post_data,$log_name) {
 
@@ -37,7 +42,7 @@ class GeneralMerchant extends Model {
         //Get The Transaction For Future Use:
         $transaction = $this->GetTransaction($trans_id);
         $this->log->LogRequest($log_name,"GeneralMerchant:  Transaction record  ". var_export($transaction,true),2);
-
+     /*
       $pending_resp=$this->PrepareMerchantResponse($transaction[0]);
       while(ob_get_level())ob_end_clean();
       ignore_user_abort();
@@ -55,9 +60,7 @@ class GeneralMerchant extends Model {
       ob_flush();
       flush();
         if (is_callable('fastcgi_finish_request')) {
-      /*
-       * This works in Nginx but the next approach not
-       */
+      //This works in Nginx but the next approach not
           fastcgi_finish_request();// important when using php-fpm!
           }
     // Close current session (if it exists).
@@ -65,6 +68,7 @@ class GeneralMerchant extends Model {
             session_write_close();
         }
 
+          */
         //Make Request To Merchant Application & Process the Merchant Results
            $trans_data=array_merge($transaction[0],$post_data);
         $operator_response = $this->ProcessOperatorRequest($trans_data,$log_name);
@@ -98,15 +102,16 @@ class GeneralMerchant extends Model {
     function ProcessOperatorRequest($transaction,$log_name) {
 
       $this->log->LogRequest($log_name,"GeneralMerchant:  ProcessOperatorRequest  ". var_export($transaction,true),2);
-
         $routing = $this->GetOperatorRouting($transaction['operator_id'],$transaction['transaction_type']);
          //print_r($transaction);die();
          $this->log->LogRequest($log_name,"GeneralMerchant:  ProcessOperatorRequest::GetOperatorRouting  ". var_export($routing,true),2);
-
-        $xml = $this->WriteGeneralXMLFile($routing[0], $transaction,$log_name);
-
-        $result = $this->SendByCURL($routing[0]['routing_url'], $transaction['transaction_type'],$xml,$log_name);
-
+        $result= $this->ProcessCallOperator($transaction,$routing[0],$log_name);
+        /*$xml = $this->WriteGeneralXMLFile($routing[0], $transaction,$log_name);
+        $header=['Authorization: Basic '.base64_encode($routing[0]['req_username'].':'.$routing[0]['req_password']),
+        'Content-Type: application/xml',
+        'Accept: application/xml'];
+        $result = $this->SendByCURL($routing[0]['routing_url'],$header, $transaction['transaction_type'],$xml,$log_name);
+              */
         return $result;
     }
 
@@ -123,13 +128,12 @@ class GeneralMerchant extends Model {
 
     function HandleOperatorResponse($transaction, $operator_resp) {
 
-              if(isset($operator_resp['operator_reference'])&&$transaction['transaction_type']=='credit'&&$operator_resp['operator_reference']!=''){
-                 $operator_resp['operator_status']='successful';
-              }
+          if(isset($operator_resp['operator_reference'])&&$transaction['transaction_type']=='credit'&&$operator_resp['operator_reference']!=''){
+           $operator_resp['operator_status']='successful';
+          }
           $error_codes=$this->MatchOPeratorRespcodes($operator_resp['operator_status']);
           $combined =array_merge($operator_resp,$error_codes);
           //print_r($combined);die();
-
         return $combined;
       }
 
@@ -165,7 +169,7 @@ class GeneralMerchant extends Model {
 
 
     function ValidateToken($data){
-      
+
       $token =$data['token'];
        unset($data['token']);
        unset($data['type']);
