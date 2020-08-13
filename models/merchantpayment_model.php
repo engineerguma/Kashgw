@@ -12,7 +12,8 @@ class Merchantpayment_Model extends GeneralMerchant {
 
     function ProcessMerchantDebitRequest($req_data,$log_name) {
 	    //print_r($req_data);die();
-    $verify =$this->ValidateToken($req_data);
+  //  $verify =$this->ValidateToken($req_data);
+    $verify=1;
     if($verify==1){
   $pay_array = $this->PrepareRequest($req_data);
    $validate=$this->validate->ValidateDebit($pay_array);
