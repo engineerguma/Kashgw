@@ -10,7 +10,7 @@ define('DB_PASS'  ,$conf['datastore']['dbpass']);
 define('DB_NAME'  ,$conf['datastore']['dbname']);
 
 
-define('CERT_PATH', 'systemlog/');
+define('CERT_PATH', $conf['security']['cert_store']);
 
 define('LOG_DIR', 'systemlog/');
 define('EXECUTION_LOG', 'systemlog/tmp/');
