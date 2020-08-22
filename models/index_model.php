@@ -9,7 +9,7 @@ class Index_Model extends Model {
 
    function ProcessStatus(){
 
-$log_name ="status_test"
+      $log_name ="status_test";
      $routing = $this->GetOperatorRouting(1,'status');
      $this->log->LogRequest($log_name,"Index_Model:  ProcessStatus  Entered ",2);
 
@@ -49,15 +49,14 @@ $log_name ="status_test"
                   // curl_setopt($ch, CURLOPT_CAINFO, CERT_PATH.$cert['ca_authority'].".crt");
                    }
                    $content = curl_exec($ch);
-                   $this->log->LogRequest($log_name,"Index_Model:  SendTestByCURL  Response Xml". var_export(curl_info,true),3);
+                   $this->log->LogRequest($log_name,"Index_Model:  SendTestByCURL  Response Xml". var_export(curl_info,true),2);
 
                    if (curl_errno($ch) > 0) {
                    $content= curl_error($ch);
                      }
                      curl_close($ch);
-                    $this->log->LogRequest($log_name,$content,2);
                      //print_r($content);die();
-            ]$this->log->LogRequest($log_name,"Index_Model:  SendTestByCURL  Response Xml". var_export($content,true),3);
+            $this->log->LogRequest($log_name,"Index_Model:  SendTestByCURL  Response Xml". var_export($content,true),3);
 
                    return $content;
                    }
