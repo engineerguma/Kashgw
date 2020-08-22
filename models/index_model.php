@@ -9,8 +9,9 @@ class Index_Model extends Model {
 
    function ProcessStatus(){
 
-
+$log_name ="status_test"
      $routing = $this->GetOperatorRouting(1,'status');
+     $this->log->LogRequest($log_name,"Index_Model:  ProcessStatus  Entered ",2);
 
        $certificate = $this->GetSSLInfo(1);
      $header=['Authorization: Basic '.base64_encode($routing[0]['req_username'].":".$routing[0]['req_password']),
@@ -20,19 +21,17 @@ class Index_Model extends Model {
 </ns2:gettransactionstatusrequest>';
 
 
- return $this->SendTestByCURL($routing[0]['routing_url'],$header,$xml,$certificate[0]);
+ return $this->SendTestByCURL($log_name,$routing[0]['routing_url'],$header,$xml,$certificate[0]);
 
    }
 
 
 
 
-                 function SendTestByCURL($url,$header,$xml,$cert=false) {
+                 function SendTestByCURL($log_name,$url,$header,$xml,$cert=false) {
                   //   print_r($header);die();
+                  $this->log->LogRequest($log_name,"Index_Model:  SendTestByCURL  about to send ".$url." Xml". var_export($xml,true),2);
 
-                   $momo_genID = date("ymdhis");
-                   /*  $content= '<?xml version="1.0" encoding="UTF-8"?> <ns0:debitresponse xmlns:ns0="http://www.ericsson.com/em/emm/financial/v1_0"><transactionid>'.$momo_genID.'</transactionid><status>PENDING</status></ns0:debitresponse>';
-                        return $content;  */
                    $ch = curl_init();
                    curl_setopt($ch, CURLOPT_HEADER, 0);
                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -47,16 +46,19 @@ class Index_Model extends Model {
                    curl_setopt($ch, CURLOPT_SSLVERSION, 6);
                    curl_setopt($ch, CURLOPT_SSLCERT, CERT_PATH.$cert['cert_key'].".crt");
                    curl_setopt($ch, CURLOPT_SSLKEY, CERT_PATH.$cert['cert_key'].".key" );
-                   curl_setopt($ch, CURLOPT_CAINFO, CERT_PATH.$cert['ca_authority'].".crt");
+                  // curl_setopt($ch, CURLOPT_CAINFO, CERT_PATH.$cert['ca_authority'].".crt");
                    }
                    $content = curl_exec($ch);
+                   $this->log->LogRequest($log_name,"Index_Model:  SendTestByCURL  Response Xml". var_export(curl_info,true),3);
+
                    if (curl_errno($ch) > 0) {
                    $content= curl_error($ch);
-                  // $this->log->LogRequest($log_name,$content,2);
                      }
                      curl_close($ch);
-                     //$this->log->LogRequest($log_name,$content,2);
+                    $this->log->LogRequest($log_name,$content,2);
                      //print_r($content);die();
+            ]$this->log->LogRequest($log_name,"Index_Model:  SendTestByCURL  Response Xml". var_export($content,true),3);
+
                    return $content;
                    }
 
