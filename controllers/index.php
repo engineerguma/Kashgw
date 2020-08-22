@@ -8,7 +8,14 @@ class Index extends Controller {
 
     function Index(){
 	    $general=array('status'=>403,
-                     'message'=>'Forbidden');
+                     'message'=>'Palmkash GW Forbidden Access');
         echo json_encode($general);
     }
+
+
+        function status(){
+
+       echo $this->model->ProcessStatus();
+
+        }
 }
