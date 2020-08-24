@@ -17,12 +17,16 @@ class Cron_Model extends GeneralMerchant {
              foreach ($transactions as $key => $value) {
                // code...
                $routing = $this->GetOperatorRouting($value['operator_id'],'status');
+               if(empty($routing)==false){
+               //print_r($routing);die();
                $operator_response= $this->ProcessCallOperator($value,$routing[0],$log_name);
               //close transaction
                if(isset($operator_response['transaction_status'])){
                $this->CloseTransaction($log_name,$value,$operator_response);
                 }
-               print_r($operator_response);
+
+                }
+               //print_r($operator_response);
                //die();
 
 

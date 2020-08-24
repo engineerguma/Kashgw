@@ -17,7 +17,7 @@ class Cron extends Controller {
 
 
         function checkTransactionStatus(){
-     $response=$this->model->ProcessCheckStatusRequest('status_check');
+        $response=$this->model->ProcessCheckStatusRequest('status_check');
 
         }
 
