@@ -17,6 +17,8 @@ define('EXECUTION_LOG', 'systemlog/tmp/');
 
 define('HASH_ALGO', 'sha256');
 
+define('STATUS_MINUTES',$conf['limits']['status_check_minutes']);
+
 define('min_credit',$conf['limits']['credit_min']);
 define('max_credit',$conf['limits']['credit_max']);
 define('min_debit',$conf['limits']['debit_min']);
