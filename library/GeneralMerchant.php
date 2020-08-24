@@ -42,7 +42,7 @@ class GeneralMerchant extends Model {
         //Get The Transaction For Future Use:
         $transaction = $this->GetTransaction($trans_id);
         $this->log->LogRequest($log_name,"GeneralMerchant:  Transaction record  ". var_export($transaction,true),2);
-     /*          */
+     /*
       $pending_resp=$this->PrepareMerchantResponse($transaction[0]);
       while(ob_get_level())ob_end_clean();
       ignore_user_abort();
@@ -68,7 +68,7 @@ class GeneralMerchant extends Model {
             session_write_close();
         }
 
-
+         */
         //Make Request To Merchant Application & Process the Merchant Results
            $trans_data=array_merge($transaction[0],$post_data);
         $operator_response = $this->ProcessOperatorRequest($trans_data,$log_name);
@@ -93,20 +93,31 @@ class GeneralMerchant extends Model {
 
 
     function ProcessOperatorRequest($transaction,$log_name) {
-
+      $response =array();
       $this->log->LogRequest($log_name,"GeneralMerchant:  ProcessOperatorRequest  ". var_export($transaction,true),2);
-        $routing = $this->GetOperatorRouting($transaction['operator_id'],$transaction['transaction_type']);
+      $routing_permissions= $this->GetMerchantRoutingPermissions($transaction['operator_id'],$transaction['merchant_id'],$transaction['transaction_type']);
+      //print_r($routing_permissions);die();
+      if(empty($routing_permissions)==false){
+      $routing = $this->GetOperatorRouting($transaction['operator_id'],$transaction['transaction_type']);
+      if(empty($routing)==false){
          //print_r($transaction);die();
          $this->log->LogRequest($log_name,"GeneralMerchant:  ProcessOperatorRequest::GetOperatorRouting  ". var_export($routing,true),2);
         $result= $this->ProcessCallOperator($transaction,$routing[0],$log_name);
-        /*$xml = $this->WriteGeneralXMLFile($routing[0], $transaction,$log_name);
-        $header=['Authorization: Basic '.base64_encode($routing[0]['req_username'].':'.$routing[0]['req_password']),
-        'Content-Type: application/xml',
-        'Accept: application/xml'];
-        $result = $this->SendByCURL($routing[0]['routing_url'],$header, $transaction['transaction_type'],$xml,$log_name);
-              */
 
         return $result;
+        }else{ //Has no Routing permissions
+          $response['transaction_status']='failed';
+      		$response['status_code']='operator_routing_not_set';
+          $response['status_description']="Operator routing for Merchant ".$transaction['merchant_account']." is not set.";
+         return $response;
+        }
+
+          }else{  //Has no Routing permissions
+            $response['transaction_status']='failed';
+        		$response['status_code']='no_operator_routing_permissions';
+            $response['status_description']="Merchant  ".$transaction['merchant_account']." has no permissions to send request to Operator";
+           return $response;
+            }
     }
 
 

@@ -75,8 +75,17 @@ class Model {
 
    function GetOperatorRouting($opid, $rt) {
 
-        $result = $this->db->SelectData("SELECT * FROM payment_operator_routing WHERE operator_id=:opID AND routing_type=:rt" ,
-                array('opID' => $opid, 'rt' => $rt));
+        $result = $this->db->SelectData("SELECT * FROM payment_operator_routing WHERE operator_id=:opID AND routing_type=:rt AND routing_status=:status" ,
+                array('opID' => $opid, 'rt' => $rt, 'status' =>'active'));
+
+        return $result;
+    }
+
+
+   function GetMerchantRoutingPermissions($opid, $merc_id,$rt) {
+
+        $result = $this->db->SelectData("SELECT * FROM merchant_operator_routing WHERE operator_id=:opID AND merchant_id=:MerchId AND routing_type=:rt AND routing_status=:status" ,
+                array('opID' => $opid, 'MerchId' => $merc_id, 'rt' => $rt, 'status' =>'active'));
 
         return $result;
     }
