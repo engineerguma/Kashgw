@@ -42,49 +42,42 @@ class GeneralMerchant extends Model {
         //Get The Transaction For Future Use:
         $transaction = $this->GetTransaction($trans_id);
         $this->log->LogRequest($log_name,"GeneralMerchant:  Transaction record  ". var_export($transaction,true),2);
-        /*          */
-         $pending_resp=$this->PrepareMerchantResponse($transaction[0]);
-         while(ob_get_level())ob_end_clean();
-         ignore_user_abort();
-         ob_start();
-         header('Content-Type: application/json');
-         echo $pending_resp;
-         $size = ob_get_length();
-         // Disable compression (in case content length is compressed).
-         header("Content-Encoding: none");
-         header("Content-Length:".$size);
-         // Close the connection.
-         header("Connection: close");
-         // Flush all output.
-         ob_end_flush();
-         ob_flush();
-         flush();
-           if (is_callable('fastcgi_finish_request')) {
-         //This works in Nginx but the next approach not
-             fastcgi_finish_request();// important when using php-fpm!
-             }
-       // Close current session (if it exists).
-           if (session_id()) {
-               session_write_close();
-           }
+     /*          */
+      $pending_resp=$this->PrepareMerchantResponse($transaction[0]);
+      while(ob_get_level())ob_end_clean();
+      ignore_user_abort();
+      ob_start();
+      header('Content-Type: application/json');
+      echo $pending_resp;
+      $size = ob_get_length();
+      // Disable compression (in case content length is compressed).
+      header("Content-Encoding: none");
+      header("Content-Length:".$size);
+      // Close the connection.
+      header("Connection: close");
+      // Flush all output.
+      ob_end_flush();
+      ob_flush();
+      flush();
+        if (is_callable('fastcgi_finish_request')) {
+      //This works in Nginx but the next approach not
+          fastcgi_finish_request();// important when using php-fpm!
+          }
+    // Close current session (if it exists).
+        if (session_id()) {
+            session_write_close();
+        }
 
 
-             //Make Request To Merchant Application & Process the Merchant Results
+        //Make Request To Merchant Application & Process the Merchant Results
            $trans_data=array_merge($transaction[0],$post_data);
         $operator_response = $this->ProcessOperatorRequest($trans_data,$log_name);
 
         $this->log->LogRequest($log_name,"GeneralMerchant:  ProcessOperatorRequest Response  ". var_export($operator_response,true),2);
-        $array= $this->map->FormatXMLTOArray($operator_response);
-        //   print_r($array);die();
-
-        $trans_resp_array = $this->HandleOperatorResponse($transaction[0], $array);
-
-        $this->log->LogRequest($log_name,"GeneralMerchant:  HandleOperatorResponse ". var_export($trans_resp_array,true),2);
 
         //Wrap Up Transaction Processing And Prepare & Send Service Provider Response:
-        $this->CloseTransaction($log_name,$transaction[0],$trans_resp_array);
+        $this->CloseTransaction($log_name,$transaction[0],$operator_response);
         $transact = $this->GetTransaction($trans_id);
-        $this->log->LogRequest($log_name,"GeneralMerchant:  HandleOperatorResponse ". var_export($trans_resp_array,true),2);
 
       //  $this->log->LogRequest($log_name,"GeneralMerchant:  HandleOperatorResponse ". var_export($trans_resp_array,true),2);
 
@@ -112,6 +105,7 @@ class GeneralMerchant extends Model {
         'Accept: application/xml'];
         $result = $this->SendByCURL($routing[0]['routing_url'],$header, $transaction['transaction_type'],$xml,$log_name);
               */
+
         return $result;
     }
 

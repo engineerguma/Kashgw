@@ -13,13 +13,15 @@ class OperatorRequests extends Model {
         $xml = $this->WriteGeneralXMLFile($routing, $transaction,$log_name);
 
        $header =$this->PrepareBasicAuthHeader($routing);
-
        $this->log->LogRequest($log_name,"OperatorRequests:  ProcessMTNRequests Header  ". var_export($header,true),2);
       // $array =array('cert_key'=>$routing['cert_key'],'ca_authority'=>$routing['ca_authority']);
         $certificate = $this->GetSSLInfo($transaction['operator_id']);
        $result = $this->SendXMLByCURL($routing['routing_url'],$header,$xml,$log_name,$certificate[0]);
+       $this->log->LogRequest($log_name,"OperatorRequests:  SendXMLByCURL response ". var_export($result,true),2);
 
-        return $result;
+        $array= $this->map->FormatXMLTOArray($result);
+         $response =$this->HandleOperatorResponse($transaction,$array);
+        return $response;
     }
 
 

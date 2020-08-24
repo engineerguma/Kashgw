@@ -134,7 +134,7 @@ class Model {
               $header= array('Content-Type: application/json');
           //  print_r($processing_rules);die();
             $response_xml = $this->SendMerchByCURL($routing[0]['routing_url'],json_encode($post),$header,$log_name);
-             echo $response_xml;
+             //echo $response_xml;
              $this->log->LogRequest($log_name,"Model:  SendMerchantCompletedRequest  Exited Initial Request",3);
              exit();
         }
@@ -232,6 +232,8 @@ class Model {
     		}else if($status=='reference_id_already_in_use'){
           $statuscode['transaction_status']='failed';
       		$statuscode['status_code']='duplicate_transactiom_reference_number';
+    		}else if($status=='not_found'){
+      		$statuscode['status_code']='transactiom_reference_not_foound';
     		}else{
           $statuscode['transaction_status']='failed';
       		$statuscode['status_code']='general_error';
@@ -239,9 +241,3 @@ class Model {
 
     		return $statuscode;
     		}
-
-
-
-}
-
-?>
