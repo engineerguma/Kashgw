@@ -43,6 +43,20 @@ class Merchantpayment extends Controller {
     }
 
 
+        function AccountInformation() {
+            $jsonrequest = file_get_contents('php://input');
+     	   if(json_decode($jsonrequest) != NULL){
+            $postdata = json_decode($jsonrequest,true);
+            $postdata['request']='kyc';
+            $log_file_name = $this->model->log->LogRequest('req_from_merchant',"Starting Credit". var_export($jsonrequest,true),1);
+            $this->model->ProcessAccountInformationRequest($postdata,'req_from_merchant');
+    	   }else{
+        $general=array('status'=>400,
+                       'message'=>'Bad Request');
+          echo json_encode($general);
+        }
+        }
+
 
         function checkTransactionStatus(){
           $jsonrequest = file_get_contents('php://input');

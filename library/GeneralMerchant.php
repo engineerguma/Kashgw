@@ -79,7 +79,6 @@ class GeneralMerchant extends Model {
         $this->CloseTransaction($log_name,$transaction[0],$operator_response);
         $transact = $this->GetTransaction($trans_id);
 
-      //  $this->log->LogRequest($log_name,"GeneralMerchant:  HandleOperatorResponse ". var_export($trans_resp_array,true),2);
 
         if($transact[0]['transaction_status']=='failed'||$transact[0]['transaction_type']=='credit'){
          $this->SendMerchantCompletedRequest($transact[0],$log_name);
@@ -119,28 +118,6 @@ class GeneralMerchant extends Model {
            return $response;
             }
     }
-
-
-
-     function PrepareBasicAuthHeader($credentials){
-
-       $header=['Authorization: Basic '.base64_encode($processing_rules['service_user_id'].":".$processing_rules['service_api_key']),
-      'Content-Type: application/xml',
-      'Accept: application/xml'];
-       return $header;
-     }
-
-
-    function HandleOperatorResponse($transaction, $operator_resp) {
-
-          if(isset($operator_resp['operator_reference'])&&$transaction['transaction_type']=='credit'&&$operator_resp['operator_reference']!=''){
-           $operator_resp['operator_status']='successful';
-          }
-          $error_codes=$this->MatchOPeratorRespcodes($operator_resp['operator_status']);
-          $combined =array_merge($operator_resp,$error_codes);
-          //print_r($combined);die();
-        return $combined;
-      }
 
 
     function PrepareMerchantResponse($transaction){

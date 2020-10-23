@@ -51,16 +51,6 @@ class GeneralOperator extends Model {
     }
 
 
-
-     function PrepareBasicAuthHeader($credentials){
-
-       $header=['Authorization: Basic '.base64_encode($processing_rules['service_user_id'].":".$processing_rules['service_api_key']),
-      'Content-Type: application/xml',
-      'Accept: application/xml'];
-       return $header;
-     }
-
-
     function HandleOperatorResponse($transaction, $operator_resp) {
 
               if(isset($operator_resp['operator_reference'])&&$transaction['transaction_type']=='credit'&&$operator_resp['operator_reference']!=''){

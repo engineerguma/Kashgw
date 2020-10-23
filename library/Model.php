@@ -56,7 +56,7 @@ class Model {
 
     function VerifyMerchantReference($reference) {
       //  $res = $this->db->SelectData("SELECT transaction_id,merchant_id,transaction_account  FROM transaction_history WHERE merchant_trans_ref=:mr", array('mr' => $reference));
-        $res = $this->db->SelectData("SELECT transaction_id,merchant_id,transaction_account,transaction_type  FROM transaction_history WHERE transaction_reference_number=:tr", array('tr' => $reference));
+        $res = $this->db->SelectData("SELECT transaction_id,merchant_id,transaction_account,transaction_type,transaction_status  FROM transaction_history WHERE transaction_reference_number=:tr", array('tr' => $reference));
         return $res;
     }
 
@@ -115,8 +115,14 @@ class Model {
         //  print_r($update_data);die();
 
           $this->log->LogRequest($log_name,"Model:  CloseTransaction ". var_export($update_data,true),2);
+          $postData =array();
+          $postData['operator_reference']=$update_data['operator_reference'];
+          $postData['transaction_status']=$update_data['transaction_status'];
+          $postData['operator_status']=$update_data['operator_status'];
+          $postData['status_code']=$update_data['status_code'];
+          $postData['status_description']=$update_data['status_description'];
 
-          $this->db->UpdateData('transaction_history', $update_data, "transaction_id = {$transaction['transaction_id']}");
+          $this->db->UpdateData('transaction_history', $postData, "transaction_id = {$transaction['transaction_id']}");
         }
 
 

@@ -30,6 +30,14 @@ class Mapping {
         'errorcode' => 'operator_status',
         'name' => 'error_name',
         'value' => 'error_value',
+        ##from Airtel
+        'command' => 'command',
+        'txnstatus' => 'operator_status',
+        'message' => 'status_description',
+        'txnid' => 'operator_reference',
+        'exttrid' => 'transaction_reference_number',
+        'extra' => 'extra',
+        'type' => 'type',
     );
 
     function __construct() {

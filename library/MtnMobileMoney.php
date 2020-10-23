@@ -1,13 +1,13 @@
 <?php
 
-class OperatorRequests extends Model {
+class MtnMobileMoney extends Model {
 
     function __construct() {
         parent::__construct();
     }
 
 
-    function ProcessMTNRequests($transaction,$routing,$log_name) {
+    function ProcessAirtelRequests($transaction,$routing,$log_name) {
 
       $this->log->LogRequest($log_name,"OperatorRequests:  ProcessMTNRequests  ". var_export($transaction,true),2);
         $xml = $this->WriteGeneralXMLFile($routing, $transaction,$log_name);
@@ -17,32 +17,12 @@ class OperatorRequests extends Model {
       // $array =array('cert_key'=>$routing['cert_key'],'ca_authority'=>$routing['ca_authority']);
         $certificate = $this->GetSSLInfo($transaction['operator_id']);
        $result = $this->SendXMLByCURL($routing['routing_url'],$header,$xml,$log_name,$certificate[0]);
-       $this->log->LogRequest($log_name,"OperatorRequests:  ProcessMTNRequests  SendXMLByCURL response ". var_export($result,true),2);
+       $this->log->LogRequest($log_name,"OperatorRequests:  SendXMLByCURL response ". var_export($result,true),2);
 
         $array= $this->map->FormatXMLTOArray($result);
          $response =$this->HandleOperatorResponse($transaction,$array);
         return $response;
     }
-
-
-    function ProcessAirtelRequests($transaction,$routing,$log_name) {
-
-      $this->log->LogRequest($log_name,"OperatorRequests:  ProcessAirtelRequests  ". var_export($transaction,true),2);
-        $xml = $this->WriteGeneralXMLFile($routing, $transaction,$log_name);
-
-       $header=['Content-Type: application/xml','Accept: application/xml'];
-       $this->log->LogRequest($log_name,"OperatorRequests:  ProcessAirtelRequests Header  ". var_export($header,true),2);
-
-       $result = $this->SendXMLByCURL($routing['routing_url'],$header,$xml,$log_name);
-       $this->log->LogRequest($log_name,"OperatorRequests:  ProcessAirtelRequests   SendXMLByCURL response ". var_export($result,true),2);
-
-        $array= $this->map->FormatXMLTOArray($result);
-      //  print_r($array);die();
-        $this->Airtel = new AirtelMoney();
-        $response=  $this->Airtel->HandleOperatorResponse($transaction,$array,$log_name);
-
-        return $response;
-      }
 
 
      function PrepareBasicAuthHeader($credentials){
@@ -59,10 +39,10 @@ class OperatorRequests extends Model {
               if(isset($operator_resp['operator_reference'])&&$transaction['transaction_type']=='credit'&&$operator_resp['operator_reference']!=''){
                  $operator_resp['operator_status']='successful';
               }
-
           $error_codes=$this->MatchOPeratorRespcodes($operator_resp['operator_status']);
           $combined =array_merge($operator_resp,$error_codes);
           //print_r($combined);die();
+
         return $combined;
         }
 
