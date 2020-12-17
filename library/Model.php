@@ -53,6 +53,10 @@ class Model {
         return $res;
     }
 
+        function GetOperatorByID($op_id) {
+            $res = $this->db->SelectData("SELECT operator_name FROM payment_operators WHERE operator_id=:op", array('op' => $op_id));
+            return $res;
+        }
 
     function VerifyMerchantReference($reference) {
       //  $res = $this->db->SelectData("SELECT transaction_id,merchant_id,transaction_account  FROM transaction_history WHERE merchant_trans_ref=:mr", array('mr' => $reference));
@@ -120,7 +124,9 @@ class Model {
           $postData['transaction_status']=$update_data['transaction_status'];
           $postData['operator_status']=$update_data['operator_status'];
           $postData['status_code']=$update_data['status_code'];
-          $postData['status_description']=$update_data['status_description'];
+          if(isset($update_data['status_description'])){
+            $postData['status_description']=$update_data['status_description'];
+                }
 
           $this->db->UpdateData('transaction_history', $postData, "transaction_id = {$transaction['transaction_id']}");
         }
@@ -138,11 +144,18 @@ class Model {
              if(isset($transaction['operator_reference'])&&$transaction['operator_reference']!=''){
             $post["operator_reference"]=$transaction['operator_reference'];
              }
-             $post["transaction_reference_number"]=$transaction['transaction_reference_number'];
+             if(isset($transaction['transaction_reference_number'])&&$transaction['operator_reference']!=''){
+            $post["transaction_reference_number"]=$transaction['transaction_reference_number'];
+             }
+             $operator = $this->GetOperatorByID($transaction['operator_id']);
+             $post["operator_name"]=$operator[0]['operator_name'];
+             $post["account_number"]=$transaction['account_number'];
              $post["gateway_reference"]=$transaction['transaction_id'];
              $post["transaction_status"]=$transaction['transaction_status'];
              $post["status_code"]=$transaction['status_code'];
-             $post["token"]=$routing[0]['access_key'];
+             if(isset($transaction['transaction_reference_number'])&&$transaction['operator_reference']!=''){
+              $post["token"]=$routing[0]['access_key'];
+             }
 
            $this->log->LogRequest($log_name,"Model:  SendMerchantCompletedRequest ". var_export($post,true),2);
 
@@ -151,7 +164,7 @@ class Model {
             $response_xml = $this->SendMerchByCURL($routing[0]['routing_url'],json_encode($post),$header,$log_name);
              //echo $response_xml;
              $this->log->LogRequest($log_name,"Model:  SendMerchantCompletedRequest  Exited Initial Request",3);
-             exit();
+
         }
 
 
