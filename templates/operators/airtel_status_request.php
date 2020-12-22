@@ -1,6 +1,6 @@
 <?php
 $airtel_status_request = '<COMMAND>
 <serviceType>TXNEQREQ</serviceType>
-<interfaceId>PALMKASH</interfaceId>
+<INTERFACEID>PALMKASH</INTERFACEID>
 <EXTTRID>'.$trans_data['transaction_id'].'</EXTTRID>
 </COMMAND>';
