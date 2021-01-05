@@ -151,7 +151,10 @@ class Model {
              $post["operator_name"]=$operator[0]['operator_name'];
              $post["account_number"]=$transaction['account_number'];
              $post["gateway_reference"]=$transaction['transaction_id'];
+             $post["transaction_amount"]=$transaction['transaction_amount'];
              $post["transaction_status"]=$transaction['transaction_status'];
+             $post["transaction_description"]=$transaction['transaction_description'];
+             $post["transaction_account"]=$transaction['transaction_account'];
              $post["status_code"]=$transaction['status_code'];
              if(isset($transaction['transaction_reference_number'])&&$transaction['operator_reference']!=''){
               $post["token"]=$routing[0]['access_key'];

@@ -8,5 +8,5 @@ $airtel_credit_request = '<COMMAND>
 <REFERENCE_NO>'.$trans_data['transaction_id'].'</REFERENCE_NO>
 <EXTTRID>'.$trans_data['transaction_reference_number'].'</EXTTRID>
 <PIN>'.$trans_data['routing']['req_password'].'</PIN>
-<interfaceId>VORTEX</interfaceId>
+<interfaceId>PALMKASH</interfaceId>
 </COMMAND>';
