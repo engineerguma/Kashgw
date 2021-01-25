@@ -19,6 +19,10 @@ define('HASH_ALGO', 'sha256');
 
 define('STATUS_MINUTES',$conf['limits']['status_check_minutes']);
 
+define('AM_KEY',$conf['am']['key']);
+define('SUBJECT',$conf['am']['subject']);
+define('ISSUER',$conf['am']['issuer']);
+
 define('min_credit',$conf['limits']['credit_min']);
 define('max_credit',$conf['limits']['credit_max']);
 define('min_debit',$conf['limits']['debit_min']);

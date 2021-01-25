@@ -39,4 +39,65 @@ class AirtelMoney extends Model {
     return $statuscode;
     }
 
+    function GenerateJWToken(){
+
+            $headers = [
+              "alg" => "HS256",
+              "typ"=> "JWT",
+          ];
+            $headers_encoded = $this->base64url_encode(json_encode($headers));
+
+            //build the payload
+             $issuedAt = time();
+            $payload =  [
+              "id" =>$this->gen_uuid(), //   .setId(UUID.randomUUID().toString())
+              "sub"=> SUBJECT,
+              "exp"=> $issuedAt+30,
+              "iss"=> ISSUER,  //issuer
+              "iat"=> $issuedAt,  //issued at
+                      ];
+            $payload_encoded = $this->base64url_encode(json_encode($payload));
+
+            //build the signature
+            $key = AM_KEY;
+            $signature = hash_hmac('sha512',"$headers_encoded.$payload_encoded",$key,true);
+            $signature_encoded = $this->base64url_encode($signature);
+
+            //build and return the token
+            $token = $headers_encoded.$payload_encoded.$signature_encoded;
+            return $token;
+           }
+
+
+         function base64url_encode($text)
+           {
+               return str_replace(
+                   ['+', '/', '='],
+                   ['-', '_', ''],
+                   base64_encode($text)
+               );
+           }
+
+    function gen_uuid() {
+        return sprintf( '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+            // 32 bits for "time_low"
+            mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ),
+
+            // 16 bits for "time_mid"
+            mt_rand( 0, 0xffff ),
+
+            // 16 bits for "time_hi_and_version",
+            // four most significant bits holds version number 4
+            mt_rand( 0, 0x0fff ) | 0x4000,
+
+            // 16 bits, 8 bits for "clk_seq_hi_res",
+            // 8 bits for "clk_seq_low",
+            // two most significant bits holds zero and one for variant DCE1.1
+            mt_rand( 0, 0x3fff ) | 0x8000,
+
+            // 48 bits for "node"
+            mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff )
+        );
+    }
+
 }

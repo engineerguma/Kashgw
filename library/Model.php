@@ -53,10 +53,11 @@ class Model {
         return $res;
     }
 
-        function GetOperatorByID($op_id) {
-            $res = $this->db->SelectData("SELECT operator_name FROM payment_operators WHERE operator_id=:op", array('op' => $op_id));
-            return $res;
-        }
+    function GetOperatorByID($op_id) {
+        $res = $this->db->SelectData("SELECT operator_name FROM payment_operators WHERE operator_id=:op", array('op' => $op_id));
+        return $res;
+    }
+
 
     function VerifyMerchantReference($reference) {
       //  $res = $this->db->SelectData("SELECT transaction_id,merchant_id,transaction_account  FROM transaction_history WHERE merchant_trans_ref=:mr", array('mr' => $reference));
@@ -104,10 +105,18 @@ class Model {
     }
 
 
+   function GetOperatorByPrefix($msisdn) {
+       $prefix = substr($msisdn, -(strlen($msisdn)), 5);
+        $result = $this->db->SelectData("SELECT * FROM operator_prefix p JOIN payment_operators o ON p.operator_id=o.operator_id WHERE prefix='".$prefix."'");
+
+        return $result;
+    }
+
+
 
    function GetOperatorPendingTransactions($op_id) {
 
-        $results = $this->db->SelectData("SELECT * FROM 	transaction_history WHERE operator_id=:id  AND transaction_status=:status" ,
+        $results = $this->db->SelectData("SELECT * FROM 	transaction_history WHERE operator_id=:id AND transaction_status=:status" ,
                 array('id' => $op_id, 'status'=>'pending'));
 
         return $results;
@@ -120,14 +129,16 @@ class Model {
 
           $this->log->LogRequest($log_name,"Model:  CloseTransaction ". var_export($update_data,true),2);
           $postData =array();
-          $postData['operator_reference']=$update_data['operator_reference'];
+
           $postData['transaction_status']=$update_data['transaction_status'];
           $postData['operator_status']=$update_data['operator_status'];
           $postData['status_code']=$update_data['status_code'];
           if(isset($update_data['status_description'])){
             $postData['status_description']=$update_data['status_description'];
-                }
-
+          }
+          if(isset($update_data['operator_reference'])){
+            $postData['operator_reference']=$update_data['operator_reference'];
+          }
           $this->db->UpdateData('transaction_history', $postData, "transaction_id = {$transaction['transaction_id']}");
         }
 
@@ -139,7 +150,6 @@ class Model {
             $routing = $this->GetMerchantRouting($transaction['merchant_id'],$transaction['transaction_type'].'_callback');
 
             $this->log->LogRequest($log_name,"Model:  SendMerchantCompletedRequest Routing data ". var_export($routing,true),2);
-
            $post =array();
              if(isset($transaction['operator_reference'])&&$transaction['operator_reference']!=''){
             $post["operator_reference"]=$transaction['operator_reference'];
@@ -207,12 +217,12 @@ class Model {
                 $filled_xml = ${$template};
 
                 $this->log->LogRequest($log_name,"Model:  WriteGeneralXMLFile  ". var_export($filled_xml,true),2);
-
+//print_r($filled_xml);die();
                 return $filled_xml;
-                }
+            }
 
 
-                    function SendByCURL($url, $type ,$xml,$log_name) {
+            function SendByCURL($url, $type,$header,$xml,$log_name) {
 
                   //  $momo_genID = date("ymdhis");
 
@@ -224,7 +234,7 @@ class Model {
                       curl_setopt($ch, CURLOPT_HTTPHEADER,$header);
                       curl_setopt($ch, CURLOPT_URL,$url);
                       curl_setopt($ch, CURLOPT_POST, 1);
-                      curl_setopt($ch, CURLOPT_POSTFIELDS, $request_data);
+                      curl_setopt($ch, CURLOPT_POSTFIELDS, $xml);
                       curl_setopt($ch, CURLOPT_FOLLOWLOCATION,true);
                       curl_setopt($ch, CURLOPT_SSL_VERIFYHOST,false);
                       curl_setopt($ch, CURLOPT_SSL_VERIFYPEER,false);
@@ -237,7 +247,7 @@ class Model {
                 		    curl_close($ch);
 
                         return $content;
-                    }
+          }
 
 
         function MatchOPeratorRespcodes($status){

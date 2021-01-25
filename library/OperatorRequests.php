@@ -30,7 +30,11 @@ class OperatorRequests extends Model {
       $this->log->LogRequest($log_name,"OperatorRequests:  ProcessAirtelRequests  ". var_export($transaction,true),2);
         $xml = $this->WriteGeneralXMLFile($routing, $transaction,$log_name);
 
+       $this->Airtel = new AirtelMoney();
        $header=['Content-Type: application/xml','Accept: application/xml'];
+       $token = $this->Airtel->GenerateJWToken();
+       $auth_header=['Authorization: Bearer '.$token];
+       $header = array_merge($header,$auth_header);
        $this->log->LogRequest($log_name,"OperatorRequests:  ProcessAirtelRequests Header  ". var_export($header,true),2);
 
        $result = $this->SendXMLByCURL($routing['routing_url'],$header,$xml,$log_name);

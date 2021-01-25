@@ -28,6 +28,23 @@ class Merchantpayment extends Controller {
          }
         }
 
+
+
+            function USSDDebitRequest() {
+                $jsonrequest = file_get_contents('php://input');
+         	   if(json_decode($jsonrequest) != NULL){
+                $postdata = json_decode($jsonrequest,true);
+                $postdata['request']='debit';
+                $log_file_name = $this->model->log->LogRequest('req_from_ussd',"Starting Debit". var_export($jsonrequest,true),1);
+                $this->model->ProcessUSSDDebitRequest($postdata, 'req_from_ussd');
+        	     }else{
+            $general=array('status'=>400,
+                           'message'=>'Bad Request');
+              echo json_encode($general);
+                 }
+                }
+
+
     function MakeCreditRequest() {
         $jsonrequest = file_get_contents('php://input');
  	   if(json_decode($jsonrequest) != NULL){

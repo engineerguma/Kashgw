@@ -132,24 +132,6 @@ class GeneralMerchant extends Model {
     }
 
 
-    function PrepareResponseMsg($vndr, $merc_resp, $transaction) {
-    $message = $merc_resp['aggreg_resp_message'];
-    if($merc_resp['aggreg_resp_code'] == 100){
-        $final_text = str_replace('[PAY_REF]', $transaction[0]['transaction_id'], $message);
-    }
-    else
-    {
-        $final_text = $message;
-    }
-    $this->log->LogToFile($vndr, "GeneralMerchant::PrepareResponseMsg:  Returning Message " . $final_text, 2, 1);
-    $merc_final = $merc_resp;
-    $merc_final['aggreg_resp_message']=$final_text;
-
-    return $merc_final;
-     }
-
-
-
     function ValidateToken($data){
 
       $token =$data['token'];

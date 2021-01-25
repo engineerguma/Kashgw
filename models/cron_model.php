@@ -7,6 +7,10 @@ class Cron_Model extends GeneralMerchant {
     }
 
 
+
+
+
+
             function ProcessCheckStatusRequest($log_name){
         $transactions =$this->GetPendingTransactions();
            if(empty($transactions)==false){
