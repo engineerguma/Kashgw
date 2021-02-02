@@ -64,7 +64,7 @@ class AirtelMoney extends Model {
             $signature_encoded = $this->base64url_encode($signature);
 
             //build and return the token
-            $token = $headers_encoded.$payload_encoded.$signature_encoded;
+            $token = "$headers_encoded.$payload_encoded.$signature_encoded";
             return $token;
            }
 
