@@ -49,14 +49,14 @@ class AirtelMoney extends Model {
 
             //build the payload
              $issuedAt = time();
-            $payload =  [
-              "id" =>$this->gen_uuid(), //   .setId(UUID.randomUUID().toString())
-              "sub"=> SUBJECT,
-              "exp"=> $issuedAt+30,
-              "iss"=> ISSUER,  //issuer
-              "iat"=> $issuedAt,  //issued at
-              "PAYLOAD"=> $request,  //request
-                      ];
+             $payload =  [
+               "id" =>$this->gen_uuid(), //   .setId(UUID.randomUUID().toString())
+               "iat"=> $issuedAt,  //issued at
+               "sub"=> SUBJECT,
+               "iss"=> ISSUER,  //issuer
+               "exp"=> $issuedAt+30,
+               "PAYLOAD"=> $request,  //request
+                       ];
             $payload_encoded = $this->base64url_encode(json_encode($payload));
 
             //build the signature
