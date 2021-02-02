@@ -32,7 +32,7 @@ class OperatorRequests extends Model {
 
        $this->Airtel = new AirtelMoney();
        $header=['Content-Type: application/xml','Accept: application/xml'];
-       $token = $this->Airtel->GenerateJWToken();
+       $token = $this->Airtel->GenerateJWToken($xml);
        $auth_header=['Authorization: Bearer '.$token];
        $header = array_merge($header,$auth_header);
        $this->log->LogRequest($log_name,"OperatorRequests:  ProcessAirtelRequests Header  ". var_export($header,true),2);

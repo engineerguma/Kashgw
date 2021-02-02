@@ -39,7 +39,7 @@ class AirtelMoney extends Model {
     return $statuscode;
     }
 
-    function GenerateJWToken(){
+    function GenerateJWToken($request){
 
             $headers = [
               "alg" => "HS256",
@@ -55,6 +55,7 @@ class AirtelMoney extends Model {
               "exp"=> $issuedAt+30,
               "iss"=> ISSUER,  //issuer
               "iat"=> $issuedAt,  //issued at
+              "PAYLOAD"=> $request,  //request
                       ];
             $payload_encoded = $this->base64url_encode(json_encode($payload));
 
