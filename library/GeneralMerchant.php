@@ -12,7 +12,7 @@ class GeneralMerchant extends Model {
           return  $this->operator->{$routing['operator_process']}($transaction,$routing,$log_name);
      }
 
-    function MerchantHandler($post_data,$log_name) {
+    function MerchantHandler($post_data,$route_extension,$log_name) {
 
       $this->log->LogRequest($log_name,"GeneralMerchant:  MerchantHandler ". var_export($post_data,true),2);
 
@@ -42,7 +42,7 @@ class GeneralMerchant extends Model {
         //Get The Transaction For Future Use:
         $transaction = $this->GetTransaction($trans_id);
         $this->log->LogRequest($log_name,"GeneralMerchant:  Transaction record  ". var_export($transaction,true),2);
-     /*
+     /*  */
       $pending_resp=$this->PrepareMerchantResponse($transaction[0]);
       while(ob_get_level())ob_end_clean();
       ignore_user_abort();
@@ -68,7 +68,7 @@ class GeneralMerchant extends Model {
             session_write_close();
         }
 
-         */
+
         //Make Request To Merchant Application & Process the Merchant Results
            $trans_data=array_merge($transaction[0],$post_data);
         $operator_response = $this->ProcessOperatorRequest($trans_data,$log_name);
@@ -81,7 +81,9 @@ class GeneralMerchant extends Model {
 
 
         if($transact[0]['transaction_status']=='failed'||$transact[0]['transaction_type']=='credit'){
-         $this->SendMerchantCompletedRequest($transact[0],$log_name);
+          if($transact[0]['transaction_source']!='ussd'){
+            $this->SendMerchantCompletedRequest($transact[0],$log_name);
+          }
         }
 
         $this->log->LogRequest($log_name,"GeneralMerchant:  Completed Processing ",3);

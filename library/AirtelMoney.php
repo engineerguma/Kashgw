@@ -1,5 +1,7 @@
 <?php
 
+require __DIR__ . '/../vendor/autoload.php';
+use \Firebase\JWT\JWT;
 class AirtelMoney extends Model {
 
     function __construct() {
@@ -41,32 +43,21 @@ class AirtelMoney extends Model {
 
     function GenerateJWToken($request){
 
-            $headers = [
-              "alg" => "HS512",
-              "typ"=> "JWT",
-          ];
-            $headers_encoded = $this->base64url_encode(json_encode($headers));
 
             //build the payload
-             $issuedAt = time();
-             $payload =  [
-               "id" =>$this->gen_uuid(), //   .setId(UUID.randomUUID().toString())
-               "iat"=> $issuedAt,  //issued at
-               "sub"=> SUBJECT,
-               "iss"=> ISSUER,  //issuer
-               "exp"=> $issuedAt+30,
-               "PAYLOAD"=> $request,  //request
-                       ];
-            $payload_encoded = $this->base64url_encode(json_encode($payload));
+            $issuedAt = time();
+            $payload =  [
+             "id" =>$this->gen_uuid(), //   .setId(UUID.randomUUID().toString())
+             "iat"=> $issuedAt,  //issued at
+             "sub"=> SUBJECT,
+             "iss"=> ISSUER,  //issuer
+             "exp"=> $issuedAt+30,
+             "PAYLOAD"=> $request,  //request
+                     ];
 
-            //build the signature
-            $key = AM_KEY;
-            $signature = hash_hmac('sha512',"$headers_encoded.$payload_encoded",$key,true);
-            $signature_encoded = $this->base64url_encode($signature);
+            $jwt = JWT::encode($payload,'218C8F4F19C2DB3BC757847E4B6E1946FAFF0F7803967A9B','HS512');
 
-            //build and return the token
-            $token = "$headers_encoded.$payload_encoded.$signature_encoded";
-            return $token;
+            return $jwt;
            }
 
 
