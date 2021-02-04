@@ -144,7 +144,7 @@ class Model {
 
 
         function SendMerchantCompletedRequest($transaction,$log_name){
-
+            $extra_headers= [];
           $this->log->LogRequest($log_name,"Model:  SendMerchantCompletedRequest transaction data ". var_export($transaction,true),2);
 
             $routing = $this->GetMerchantRouting($transaction['merchant_id'],$transaction['transaction_type'].'_callback');
@@ -166,14 +166,21 @@ class Model {
              $post["transaction_description"]=$transaction['transaction_description'];
              $post["transaction_account"]=$transaction['transaction_account'];
              $post["status_code"]=$transaction['status_code'];
-             if(isset($transaction['transaction_reference_number'])&&$transaction['operator_reference']!=''){
-              $post["token"]=$routing[0]['access_key'];
+             if(isset($routing[0]['token'])&&$routing[0]['token']!=''){
+              if($routing[0]['auth_type']=='bearer'){
+                $extra_headers= ['Authentication: Bearer '.$routing[0]['token']];
+              }else if($routing[0]['auth_type']=='basic'){
+                $extra_headers= ['Authentication: Basic '.$routing[0]['token']];
+              }else{
+              $post["token"]=$routing[0]['token'];
+               }
              }
 
            $this->log->LogRequest($log_name,"Model:  SendMerchantCompletedRequest ". var_export($post,true),2);
 
-              $header= array('Content-Type: application/json');
-          //  print_r($processing_rules);die();
+              $header= ['Content-Type: application/json'];
+                        $header = array_merge($header,$extra_headers);
+             //print_r($header);die();
             $response_xml = $this->SendMerchByCURL($routing[0]['routing_url'],json_encode($post),$header,$log_name);
              //echo $response_xml;
              $this->log->LogRequest($log_name,"Model:  SendMerchantCompletedRequest  Exited Initial Request",3);
