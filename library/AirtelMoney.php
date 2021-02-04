@@ -42,7 +42,7 @@ class AirtelMoney extends Model {
     function GenerateJWToken($request){
 
             $headers = [
-              "alg" => "HS256",
+              "alg" => "HS512",
               "typ"=> "JWT",
           ];
             $headers_encoded = $this->base64url_encode(json_encode($headers));
