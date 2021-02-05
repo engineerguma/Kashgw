@@ -168,9 +168,9 @@ class Model {
              $post["status_code"]=$transaction['status_code'];
              if(isset($routing[0]['token'])&&$routing[0]['token']!=''){
               if($routing[0]['auth_type']=='bearer'){
-                $extra_headers= ['Authentication: Bearer '.$routing[0]['token']];
+                $extra_headers= ['Authorization: Bearer '.$routing[0]['token']];
               }else if($routing[0]['auth_type']=='basic'){
-                $extra_headers= ['Authentication: Basic '.$routing[0]['token']];
+                $extra_headers= ['Authorization: Basic '.$routing[0]['token']];
               }else{
               $post["token"]=$routing[0]['token'];
                }
@@ -178,11 +178,16 @@ class Model {
 
            $this->log->LogRequest($log_name,"Model:  SendMerchantCompletedRequest ". var_export($post,true),2);
 
-              $header= ['Content-Type: application/json'];
+              $header= [
+                'Content-Type: application/json',
+                'Accept: application/json',
+                'cache-control: no-cache',
+                'Content-Length: ' . strlen(json_encode($post)),
+                      ];
                         $header = array_merge($header,$extra_headers);
-             //print_r($header);die();
+            // print_r($header);die();
             $response_xml = $this->SendMerchByCURL($routing[0]['routing_url'],json_encode($post),$header,$log_name);
-             //echo $response_xml;
+             echo $response_xml;
              $this->log->LogRequest($log_name,"Model:  SendMerchantCompletedRequest  Exited Initial Request",3);
 
         }
@@ -193,13 +198,12 @@ class Model {
 
               $this->log->LogRequest($log_name,"Model:  SendMerchByCURL to .".$url."  data to send". var_export($post_data,true),2);
 
-
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_HEADER, 0);
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
                 curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
                 curl_setopt($ch, CURLOPT_URL, $url);
-                curl_setopt($ch, CURLOPT_POST, 1);
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST,"POST");
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
                 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
                 curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
