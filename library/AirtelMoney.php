@@ -55,7 +55,7 @@ class AirtelMoney extends Model {
              "PAYLOAD"=> $request,  //request
                      ];
 
-            $jwt = JWT::encode($payload,'218C8F4F19C2DB3BC757847E4B6E1946FAFF0F7803967A9B','HS512');
+            $jwt = JWT::encode($payload,base64_encode(AM_KEY),'HS512');
 
             return $jwt;
            }
