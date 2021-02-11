@@ -43,7 +43,9 @@ class AirtelMoney extends Model {
 
     function GenerateJWToken($request){
 
-
+              $headers = [
+                "alg" => "HS512",
+            ];
             //build the payload
             $issuedAt = time();
             $payload =  [
@@ -54,8 +56,12 @@ class AirtelMoney extends Model {
              "exp"=> $issuedAt+30,
              "PAYLOAD"=> $request,  //request
                      ];
+        $headers_encoded = $this->base64url_encode(json_encode($headers));
+        $signature = hash_hmac('sha512',"$headers_encoded.$payload_encoded",base64_encode(AM_KEY),true);
+        $signature_encoded = $this->base64url_encode($signature);
 
-            $jwt = JWT::encode($payload,base64_encode(AM_KEY),ALGO);
+        //build and return the token
+        $jwt = "$headers_encoded.$payload_encoded.$signature_encoded";
 
             return $jwt;
            }
