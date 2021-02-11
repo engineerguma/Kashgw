@@ -61,7 +61,7 @@ class AirtelMoney extends Model {
 
         $payload_encoded = $this->base64url_encode(json_encode($payload));
 
-        $signature = hash_hmac('sha512',"$headers_encoded.$payload_encoded",base64_encode(AM_KEY),true);
+        $signature = hash_hmac('sha512',"$headers_encoded.$payload_encoded",base64_decode(AM_KEY),true);
         $signature_encoded = $this->base64url_encode($signature);
 
         //build and return the token
