@@ -46,6 +46,8 @@ class AirtelMoney extends Model {
               $headers = [
                 "alg" => "HS512",
             ];
+            $headers_encoded = $this->base64url_encode(json_encode($headers));
+
             //build the payload
             $issuedAt = time();
             $payload =  [
@@ -53,10 +55,12 @@ class AirtelMoney extends Model {
              "iat"=> $issuedAt,  //issued at
              "sub"=> SUBJECT,
              "iss"=> ISSUER,  //issuer
-             "exp"=> $issuedAt+30,
+             "exp"=> $issuedAt+3600,
              "PAYLOAD"=> $request,  //request
                      ];
-        $headers_encoded = $this->base64url_encode(json_encode($headers));
+
+        $payload_encoded = $this->base64url_encode(json_encode($payload));
+
         $signature = hash_hmac('sha512',"$headers_encoded.$payload_encoded",base64_encode(AM_KEY),true);
         $signature_encoded = $this->base64url_encode($signature);
 

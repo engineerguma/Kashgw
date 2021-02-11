@@ -1,7 +1,10 @@
 <?php
 
 $conf = parse_ini_file("config/conf.ini",true);
-//print_r($conf);die();
+
+define('URL'  ,$conf['url_connect']['url']);
+
+
 define('DB_TYPE'  ,$conf['datastore']['dtype']);
 
 define('DB_HOST'  ,$conf['datastore']['dhost']);
