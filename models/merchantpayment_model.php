@@ -25,15 +25,22 @@ class Merchantpayment_Model extends GeneralMerchant {
         $merchant =$this->FindMerchant($stan_array);
         if(empty($merchant)==false){
         $stan_array['merchant_id']=$merchant[0]['merchant_id'];;
+
+       $prefix =$this->GetOperatorByPrefix($stan_array['transaction_account']);
+        if(empty($prefix)==false){
+        $stan_array['operator_id']=$prefix[0]['operator_id'];
         $operator =$this->FindOPerator($stan_array);
      if(empty($operator)==false){
         $stan_array['operator_id']=$operator[0]['operator_id'];
-          //  print_r($stan_array);die();
     $this->log->LogRequest($log_name,"MerchantModel:  ProcessMerchantDebitRequest". var_export($merchant,true),2);
        $rout_extension='debit';
       $this->MerchantHandler($stan_array,$rout_extension,$log_name);
         }else{
        $this->RespondError("operator Account ".$stan_array['operator']." was not found",401,$log_name);
+        }
+
+        }else{
+       $this->RespondError("Operator not supported for ".$stan_array['transaction_account']." ",401,$log_name);
         }
 
         }else{
@@ -114,8 +121,11 @@ class Merchantpayment_Model extends GeneralMerchant {
    if(isset($stan_array['error'])==false){
 
    $merchant =$this->FindMerchant($stan_array);
-     if(empty($merchant)==false){
-        $stan_array['merchant_id']=$merchant[0]['merchant_id'];
+   if(empty($merchant)==false){
+   $stan_array['merchant_id']=$merchant[0]['merchant_id'];;
+   $prefix =$this->GetOperatorByPrefix($stan_array['transaction_account']);
+   if(empty($prefix)==false){
+   $stan_array['operator_id']=$prefix[0]['operator_id'];
         $operator =$this->FindOPerator($stan_array);
      if(empty($operator)==false){
         $stan_array['operator_id']=$operator[0]['operator_id'];
@@ -125,6 +135,10 @@ class Merchantpayment_Model extends GeneralMerchant {
 
         }else{
        $this->RespondError("operator Account ".$stan_array['operator']." was not found",401,$log_name);
+        }
+
+        }else{
+       $this->RespondError("Operator not supported for ".$stan_array['transaction_account'],401,$log_name);
         }
 
         }else{
@@ -294,7 +308,6 @@ class Merchantpayment_Model extends GeneralMerchant {
       //  $op_id = $res[0]['operator_id'];
         return $res;
     }
-
 
 
 }
