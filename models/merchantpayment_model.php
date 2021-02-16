@@ -22,22 +22,22 @@ class Merchantpayment_Model extends GeneralMerchant {
    $stan_array=$this->map->Standardize($pay_array);
       if(isset($stan_array['error'])==false){
 
-        $merchant =$this->FindMerchant($stan_array);
-        if(empty($merchant)==false){
-        $stan_array['merchant_id']=$merchant[0]['merchant_id'];;
+      $merchant =$this->FindMerchant($stan_array);
+      if(empty($merchant)==false){
+      $stan_array['merchant_id']=$merchant[0]['merchant_id'];;
 
-       $prefix =$this->GetOperatorByPrefix($stan_array['transaction_account']);
-        if(empty($prefix)==false){
+      $prefix =$this->GetOperatorByPrefix($stan_array['transaction_account']);
+      if(empty($prefix)==false){
         $stan_array['operator_id']=$prefix[0]['operator_id'];
-        $operator =$this->FindOPerator($stan_array);
-     if(empty($operator)==false){
-        $stan_array['operator_id']=$operator[0]['operator_id'];
-    $this->log->LogRequest($log_name,"MerchantModel:  ProcessMerchantDebitRequest". var_export($merchant,true),2);
+      //  $operator =$this->FindOPerator($stan_array);
+      //  if(empty($operator)==false){
+      //  $stan_array['operator_id']=$operator[0]['operator_id'];
+    $this->log->LogRequest($log_name,"MerchantModel:  ProcessMerchantDebitRequest". var_export($operator,true),2);
        $rout_extension='debit';
       $this->MerchantHandler($stan_array,$rout_extension,$log_name);
-        }else{
+      /* }else{
        $this->RespondError("operator Account ".$stan_array['operator']." was not found",401,$log_name);
-        }
+      } */
 
         }else{
        $this->RespondError("Operator not supported for ".$stan_array['transaction_account']." ",401,$log_name);
