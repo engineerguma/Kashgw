@@ -44,12 +44,12 @@ class Model {
 
    function SaveTransactionRecord($data){
            //print_r($data);die();
-     $trans_id = $this->db->InsertData("transaction_history", $data, 'transaction_id');
+     $trans_id = $this->db->InsertData("transaction_histories", $data, 'transaction_id');
      return $trans_id;
    }
 
     function VerifyOperatorReference($reference) {
-        $res = $this->db->SelectData("SELECT transaction_id,merchant_id,operator_reference,transaction_type FROM transaction_history WHERE operator_reference=:of", array('of' => $reference));
+        $res = $this->db->SelectData("SELECT transaction_id,merchant_id,operator_reference,transaction_type FROM transaction_histories WHERE operator_reference=:of", array('of' => $reference));
         return $res;
     }
 
@@ -60,27 +60,27 @@ class Model {
 
 
     function VerifyMerchantReference($reference) {
-      //  $res = $this->db->SelectData("SELECT transaction_id,merchant_id,transaction_account  FROM transaction_history WHERE merchant_trans_ref=:mr", array('mr' => $reference));
-        $res = $this->db->SelectData("SELECT transaction_id,merchant_id,transaction_account,transaction_type,transaction_status  FROM transaction_history WHERE transaction_reference_number=:tr", array('tr' => $reference));
+      //  $res = $this->db->SelectData("SELECT transaction_id,merchant_id,transaction_account  FROM transaction_histories WHERE merchant_trans_ref=:mr", array('mr' => $reference));
+        $res = $this->db->SelectData("SELECT transaction_id,merchant_id,transaction_account,transaction_type,transaction_status  FROM transaction_histories WHERE transaction_reference_number=:tr", array('tr' => $reference));
         return $res;
     }
 
 
 
       function GetSSLInfo($opid) {
-            return $this->db->SelectData("SELECT * FROM ssl_connection WHERE operator_id=:opid", array('opid' => $opid));
+            return $this->db->SelectData("SELECT * FROM ssl_connections WHERE operator_id=:opid", array('opid' => $opid));
         }
 
 
 
       function GetTransaction($tid) {
-            return $this->db->SelectData("SELECT * FROM transaction_history WHERE transaction_id=:tid", array('tid' => $tid));
+            return $this->db->SelectData("SELECT * FROM transaction_histories WHERE transaction_id=:tid", array('tid' => $tid));
         }
 
 
    function GetOperatorRouting($opid, $rt) {
 
-        $result = $this->db->SelectData("SELECT * FROM payment_operator_routing WHERE operator_id=:opID AND routing_type=:rt AND routing_status=:status" ,
+        $result = $this->db->SelectData("SELECT * FROM payment_operator_routingss WHERE operator_id=:opID AND routing_type=:rt AND routing_status=:status" ,
                 array('opID' => $opid, 'rt' => $rt, 'status' =>'active'));
 
         return $result;
@@ -89,7 +89,7 @@ class Model {
 
    function GetMerchantRoutingPermissions($opid, $merc_id,$rt) {
 
-        $result = $this->db->SelectData("SELECT * FROM merchant_operator_routing WHERE operator_id=:opID AND merchant_id=:MerchId AND routing_type=:rt AND routing_status=:status" ,
+        $result = $this->db->SelectData("SELECT * FROM merchant_operator_routingss WHERE operator_id=:opID AND merchant_id=:MerchId AND routing_type=:rt AND routing_status=:status" ,
                 array('opID' => $opid, 'MerchId' => $merc_id, 'rt' => $rt, 'status' =>'active'));
 
         return $result;
@@ -98,7 +98,7 @@ class Model {
 
    function GetMerchantRouting($merc_id, $rt) {
 
-        $result = $this->db->SelectData("SELECT * FROM merchant_routing WHERE merchant_id=:mID AND routing_type=:rt" ,
+        $result = $this->db->SelectData("SELECT * FROM merchant_routings WHERE merchant_id=:mID AND routing_type=:rt" ,
                 array('mID' => $merc_id, 'rt' => $rt));
 
         return $result;
@@ -107,7 +107,7 @@ class Model {
 
    function GetOperatorByPrefix($msisdn) {
        $prefix = substr($msisdn, -(strlen($msisdn)), 5);
-        $result = $this->db->SelectData("SELECT * FROM operator_prefix p JOIN payment_operators o ON p.operator_id=o.operator_id WHERE prefix='".$prefix."'");
+        $result = $this->db->SelectData("SELECT * FROM operator_prefixes p JOIN payment_operators o ON p.operator_id=o.operator_id WHERE prefix='".$prefix."'");
 
         return $result;
     }
@@ -116,7 +116,7 @@ class Model {
 
    function GetOperatorPendingTransactions($op_id) {
 
-        $results = $this->db->SelectData("SELECT * FROM 	transaction_history WHERE operator_id=:id AND transaction_status=:status" ,
+        $results = $this->db->SelectData("SELECT * FROM 	transaction_histories WHERE operator_id=:id AND transaction_status=:status" ,
                 array('id' => $op_id, 'status'=>'pending'));
 
         return $results;
@@ -139,7 +139,7 @@ class Model {
           if(isset($update_data['operator_reference'])){
             $postData['operator_reference']=$update_data['operator_reference'];
           }
-          $this->db->UpdateData('transaction_history', $postData, "transaction_id = {$transaction['transaction_id']}");
+          $this->db->UpdateData('transaction_histories', $postData, "transaction_id = {$transaction['transaction_id']}");
         }
 
 
