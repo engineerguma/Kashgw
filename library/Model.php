@@ -89,7 +89,7 @@ class Model {
 
    function GetMerchantRoutingPermissions($opid, $merc_id,$rt) {
 
-        $result = $this->db->SelectData("SELECT * FROM merchant_operator_routingss WHERE operator_id=:opID AND merchant_id=:MerchId AND routing_type=:rt AND routing_status=:status" ,
+        $result = $this->db->SelectData("SELECT * FROM merchant_operator_routings WHERE operator_id=:opID AND merchant_id=:MerchId AND routing_type=:rt AND routing_status=:status" ,
                 array('opID' => $opid, 'MerchId' => $merc_id, 'rt' => $rt, 'status' =>'active'));
 
         return $result;
