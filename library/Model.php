@@ -80,7 +80,7 @@ class Model {
 
    function GetOperatorRouting($opid, $rt) {
 
-        $result = $this->db->SelectData("SELECT * FROM payment_operator_routingss WHERE operator_id=:opID AND routing_type=:rt AND routing_status=:status" ,
+        $result = $this->db->SelectData("SELECT * FROM payment_operator_routings WHERE operator_id=:opID AND routing_type=:rt AND routing_status=:status" ,
                 array('opID' => $opid, 'rt' => $rt, 'status' =>'active'));
 
         return $result;
