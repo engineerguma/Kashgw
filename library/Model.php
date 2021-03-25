@@ -154,7 +154,7 @@ class Model {
              if(isset($transaction['operator_reference'])&&$transaction['operator_reference']!=''){
             $post["operator_reference"]=$transaction['operator_reference'];
              }
-             if(isset($transaction['transaction_reference_number'])&&$transaction['operator_reference']!=''){
+             if(isset($transaction['transaction_reference_number'])&&$transaction['transaction_reference_number']!=''){
             $post["transaction_reference_number"]=$transaction['transaction_reference_number'];
              }
              $operator = $this->GetOperatorByID($transaction['operator_id']);
