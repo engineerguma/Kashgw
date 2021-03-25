@@ -125,17 +125,12 @@ class Merchantpayment_Model extends GeneralMerchant {
    $stan_array['merchant_id']=$merchant[0]['merchant_id'];;
    $prefix =$this->GetOperatorByPrefix($stan_array['transaction_account']);
    if(empty($prefix)==false){
+
    $stan_array['operator_id']=$prefix[0]['operator_id'];
-        $operator =$this->FindOPerator($stan_array);
-     if(empty($operator)==false){
-        $stan_array['operator_id']=$operator[0]['operator_id'];
-    $this->log->LogRequest($log_name,"MerchantModel:  ProcessMerchantCreditRequest ". var_export($merchant,true),2);
+
+  $this->log->LogRequest($log_name,"MerchantModel:  ProcessMerchantCreditRequest ". var_export($merchant,true),2);
        $rout_extension='credit';
       $this->MerchantHandler($stan_array,$rout_extension,$log_name);
-
-        }else{
-       $this->RespondError("operator Account ".$stan_array['operator']." was not found",401,$log_name);
-        }
 
         }else{
        $this->RespondError("Operator not supported for ".$stan_array['transaction_account'],401,$log_name);
