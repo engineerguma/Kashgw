@@ -23,7 +23,8 @@ class Cron_Model extends GeneralMerchant {
                $operator_response= $this->ProcessCallOperator($value,$routing[0],$log_name);
               //close transaction
 
-               if(isset($operator_response['transaction_status'])){
+              // if(isset($operator_response['transaction_status'])){
+               if(isset($operator_response['transaction_status'])&&strtolower($operator_response['transaction_status'])!='pending'){
                $this->CloseTransaction($log_name,$value,$operator_response);
                $transact = $this->GetTransaction($value['transaction_id']);
 
