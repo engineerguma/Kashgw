@@ -15,7 +15,10 @@ class AirtelMoney extends Model {
          $operator_resp['operator_status']='pending';
          unset($operator_resp['operator_reference']);
       }
-      if(isset($operator_resp['operator_reference'])&&$transaction['transaction_type']=='credit'&&$operator_resp['operator_reference']!=''){
+      /*if(isset($operator_resp['operator_reference'])&&$transaction['transaction_type']=='credit'&&$operator_resp['operator_reference']!=''){
+         $operator_resp['operator_status']='successful';
+      }*/
+      if(isset($operator_resp['operator_status'])&&$operator_resp['operator_status']==200&&$operator_resp['operator_reference']!=''){
          $operator_resp['operator_status']='successful';
       }
       $error_codes=$this->MatchAirtelRespcodes($operator_resp['operator_status']);
