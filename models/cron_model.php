@@ -22,6 +22,7 @@ class Cron_Model extends GeneralMerchant {
 
                $operator_response= $this->ProcessCallOperator($value,$routing[0],$log_name);
               //close transaction
+              $this->log->LogRequest($log_name, "CronModel::ProcessCallOperator response ".var_export($operator_response, true), 2, 2);
 
               // if(isset($operator_response['transaction_status'])){
                if(isset($operator_response['transaction_status'])&&strtolower($operator_response['transaction_status'])!='pending'){
