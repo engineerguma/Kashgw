@@ -41,6 +41,9 @@ class OperatorRequests extends Model {
        $this->log->LogRequest($log_name,"OperatorRequests:  ProcessAirtelRequests   SendXMLByCURL response ". var_export($result,true),2);
 
         $array= $this->map->FormatXMLTOArray($result);
+
+        $this->log->LogRequest($log_name,"OperatorRequests:  ProcessAirtelRequests  Converted Arry ". var_export($array,true),2);
+        
       //  print_r($array);die();
         $this->Airtel = new AirtelMoney();
         $response=  $this->Airtel->HandleOperatorResponse($transaction,$array,$log_name);
