@@ -9,15 +9,15 @@ class OperatorRequests extends Model {
 
     function ProcessMTNRequests($transaction,$routing,$log_name) {
 
-      $this->log->LogRequest($log_name,"OperatorRequests:  ProcessMTNRequests  ". var_export($transaction,true),2);
+    //  $this->log->LogRequest($log_name,"OperatorRequests:  ProcessMTNRequests  ". var_export($transaction,true),2);
         $xml = $this->WriteGeneralXMLFile($routing, $transaction,$log_name);
 
        $header =$this->PrepareBasicAuthHeader($routing);
-       $this->log->LogRequest($log_name,"OperatorRequests:  ProcessMTNRequests Header  ". var_export($header,true),2);
+    //   $this->log->LogRequest($log_name,"OperatorRequests:  ProcessMTNRequests Header  ". var_export($header,true),2);
       // $array =array('cert_key'=>$routing['cert_key'],'ca_authority'=>$routing['ca_authority']);
         $certificate = $this->GetSSLInfo($transaction['operator_id']);
        $result = $this->SendXMLByCURL($routing['routing_url'],$header,$xml,$log_name,$certificate[0]);
-       $this->log->LogRequest($log_name,"OperatorRequests:  ProcessMTNRequests  SendXMLByCURL response ". var_export($result,true),2);
+    //   $this->log->LogRequest($log_name,"OperatorRequests:  ProcessMTNRequests  SendXMLByCURL response ". var_export($result,true),2);
 
         $array= $this->map->FormatXMLTOArray($result);
          $response =$this->HandleOperatorResponse($transaction,$array);
@@ -27,7 +27,7 @@ class OperatorRequests extends Model {
 
     function ProcessAirtelRequests($transaction,$routing,$log_name) {
 
-      $this->log->LogRequest($log_name,"OperatorRequests:  ProcessAirtelRequests  ". var_export($transaction,true),2);
+    //  $this->log->LogRequest($log_name,"OperatorRequests:  ProcessAirtelRequests  ". var_export($transaction,true),2);
         $xml = $this->WriteGeneralXMLFile($routing, $transaction,$log_name);
 
        $this->Airtel = new AirtelMoney();
@@ -35,15 +35,15 @@ class OperatorRequests extends Model {
        $token = $this->Airtel->GenerateJWToken($xml);
        $auth_header=['Authorization: Bearer '.$token];
        $header = array_merge($header,$auth_header);
-       $this->log->LogRequest($log_name,"OperatorRequests:  ProcessAirtelRequests Header  ". var_export($header,true),2);
+      // $this->log->LogRequest($log_name,"OperatorRequests:  ProcessAirtelRequests Header  ". var_export($header,true),2);
 
        $result = $this->SendXMLByCURL($routing['routing_url'],$header,$xml,$log_name);
-       $this->log->LogRequest($log_name,"OperatorRequests:  ProcessAirtelRequests   SendXMLByCURL response ". var_export($result,true),2);
+       //$this->log->LogRequest($log_name,"OperatorRequests:  ProcessAirtelRequests   SendXMLByCURL response ". var_export($result,true),2);
 
         $array= $this->map->FormatXMLTOArray($result);
 
-        $this->log->LogRequest($log_name,"OperatorRequests:  ProcessAirtelRequests  Converted Arry ". var_export($array,true),2);
-        
+      //  $this->log->LogRequest($log_name,"OperatorRequests:  ProcessAirtelRequests  Converted Arry ". var_export($array,true),2);
+
       //  print_r($array);die();
         $this->Airtel = new AirtelMoney();
         $response=  $this->Airtel->HandleOperatorResponse($transaction,$array,$log_name);
