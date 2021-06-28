@@ -30,7 +30,13 @@ class Cron_Model extends GeneralMerchant {
                $transact = $this->GetTransaction($value['transaction_id']);
 
               $this->log->LogRequest($log_name, "CronModel::PrepareTOCloseTransaction closed transaction ".var_export($transact[0], true), 2, 3);
-
+              if($transact[0]['transaction_source']=='ussd'){
+                if($transact[0]['transaction_status']=='completed'){
+                  //change routing_type to posting
+                $this->SendMerchantCompletedRequest($transact[0],$log_name);
+                  }
+                exit();
+              }
 
                $this->SendMerchantCompletedRequest($transact[0],$log_name);
 
