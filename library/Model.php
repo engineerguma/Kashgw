@@ -59,9 +59,9 @@ class Model {
     }
 
 
-    function VerifyMerchantReference($reference) {
+    function VerifyMerchantReference($reference,$merchant_id) {
       //  $res = $this->db->SelectData("SELECT transaction_id,merchant_id,transaction_account  FROM transaction_histories WHERE merchant_trans_ref=:mr", array('mr' => $reference));
-        $res = $this->db->SelectData("SELECT transaction_id,merchant_id,transaction_account,transaction_type,transaction_status  FROM transaction_histories WHERE transaction_reference_number=:tr", array('tr' => $reference));
+        $res = $this->db->SelectData("SELECT transaction_id,merchant_id,transaction_account,transaction_type,transaction_status  FROM transaction_histories WHERE transaction_reference_number=:tr and merchant_id=:merchant_id ", array('tr' => $reference,'merchant_id'=>$merchant_id));
         return $res;
     }
 

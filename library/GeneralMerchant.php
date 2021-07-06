@@ -17,7 +17,7 @@ class GeneralMerchant extends Model {
       $this->log->LogRequest($log_name,"GeneralMerchant:  MerchantHandler ". var_export($post_data,true),2);
 
         //Check Whether the transaction Is Duplicate:
-        $res = $this->VerifyMerchantReference($post_data['transaction_reference_number']);
+        $res = $this->VerifyMerchantReference($post_data['transaction_reference_number'],$post_data['merchant_id']);
       //  print_r($res);die();
         if (count($res) > 0) {
             //$this->ResendPaymentResponse($res[0]['transaction_id']);
