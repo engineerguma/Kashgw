@@ -131,10 +131,13 @@ class Model {
           $postData =array();
 
           $postData['transaction_status']=$update_data['transaction_status'];
-          $postData['operator_status']=$update_data['operator_status'];
           $postData['status_code']=$update_data['status_code'];
+
+          if(isset($update_data['operator_status'])){
+            $postData['operator_status']=$update_data['operator_status'];
+          }
           if(isset($update_data['status_description'])){
-            $postData['status_description']=$update_data['status_description'];
+            $postData['transaction_description']=$update_data['status_description'];
           }
           if(isset($update_data['operator_reference'])){
             $postData['operator_reference']=$update_data['operator_reference'];
