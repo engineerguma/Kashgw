@@ -2,7 +2,7 @@
 
 $conf = parse_ini_file("config/conf.ini",true);
 
-define('URL'  ,$conf['url_connect']['url']);
+//define('URL'  ,$conf['url_connect']['url']);
 
 
 define('DB_TYPE'  ,$conf['datastore']['dtype']);
