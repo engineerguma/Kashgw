@@ -129,26 +129,34 @@ class Model {
 
 
 
-        function CloseTransaction($log_name,$transaction,$update_data) {
-        //  print_r($update_data);die();
+    function CloseTransaction($log_name,$transaction,$update_data) {
 
-          $this->log->LogRequest($log_name,"Model:  CloseTransaction ". var_export($update_data,true),2);
-          $postData =array();
+      $this->log->LogRequest($log_name,"Model:  CloseTransaction ". var_export($update_data,true),2);
+      $postData =array();
 
-          $postData['transaction_status']=$update_data['transaction_status'];
-          $postData['status_code']=$update_data['status_code'];
+      $postData['transaction_status']=$update_data['transaction_status'];
+      $postData['status_code']=$update_data['status_code'];
+      if(isset($update_data['operator_status'])){
+        $postData['operator_status']=$update_data['operator_status'];
+      }
+      if(isset($update_data['status_description'])){
+        $postData['transaction_description']=$update_data['status_description'];
+      }
+      if(isset($update_data['operator_reference'])){
+        $postData['operator_reference']=$update_data['operator_reference'];
+      }
+      //print_r($postData);die();
+    try{
 
-          if(isset($update_data['operator_status'])){
-            $postData['operator_status']=$update_data['operator_status'];
-          }
-          if(isset($update_data['status_description'])){
-            $postData['transaction_description']=$update_data['status_description'];
-          }
-          if(isset($update_data['operator_reference'])){
-            $postData['operator_reference']=$update_data['operator_reference'];
-          }
-          $this->db->UpdateData('transaction_histories', $postData, "transaction_id = {$transaction['transaction_id']}");
-        }
+      $this->log->LogRequest($log_name,"Model:  CloseTransaction Data to update for ID ".$transaction['transaction_id']." Data ". var_export($postData,true),2);
+
+      $this->db->UpdateData('transaction_histories', $postData, "transaction_id = {$transaction['transaction_id']}");
+    }catch(Exception $e){
+      $this->log->LogRequest($log_name,"Model:  CloseTransaction Exception error  ". var_export($e,true),2);
+
+    }
+
+      }
 
 
         function SendMerchantCompletedRequest($transaction,$log_name){
