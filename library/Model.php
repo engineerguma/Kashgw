@@ -148,7 +148,7 @@ class Model {
       //print_r($postData);die();
     try{
 
-      $this->log->LogRequest($log_name,"Model:  CloseTransaction Data to update for ID ".$transaction['transaction_id']." Data ". var_export($postData,true),2);
+    //  $this->log->LogRequest($log_name,"Model:  CloseTransaction Data to update for ID ".$transaction['transaction_id']." Data ". var_export($postData,true),2);
 
       $this->db->UpdateData('transaction_histories', $postData, "transaction_id = {$transaction['transaction_id']}");
     }catch(Exception $e){
