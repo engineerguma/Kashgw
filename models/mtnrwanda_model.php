@@ -12,7 +12,7 @@ class Mtnrwanda_Model extends GeneralOperator {
             $req_array = $this->map->FormatXMLTOArray($req_data);
             $this->log->LogRequest($log_name,"MtnrwandaModel:  ProcessDebitCompletedRequest data ". var_export($req_array,true),2);
 
-      $transaction = $this->VerifyMerchantReference($req_array['transaction_reference_number']);
+      $transaction = $this->getMerchantReference($req_array['transaction_reference_number']);
 
                if(count($transaction)>0){
       $error_codes=$this->MatchOPeratorRespcodes($req_array['operator_status']);

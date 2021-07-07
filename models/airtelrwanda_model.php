@@ -13,7 +13,7 @@ class Airtelrwanda_Model extends GeneralOperator {
             //print_r($req_array);die();
             $this->log->LogRequest($log_name,"AirtelrwandaModel:  ProcessDebitCompletedRequest data ". var_export($req_array,true),2);
 
-      $transaction = $this->VerifyMerchantReference($req_array['transaction_reference_number']);
+      $transaction = $this->getMerchantReference($req_array['transaction_reference_number']);
           if(!empty($transaction)&&$transaction[0]['transaction_status']=='pending'){
             //release client
             header('Content-Type: text/xml');
