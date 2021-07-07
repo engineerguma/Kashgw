@@ -171,7 +171,9 @@ class Model {
              $post["gateway_reference"]=$transaction['transaction_id'];
              $post["transaction_amount"]=$transaction['transaction_amount'];
              $post["transaction_status"]=$transaction['transaction_status'];
-             $post["transaction_description"]=$transaction['transaction_description'];
+             if(isset($transaction['transaction_description'])&&$transaction['transaction_description']!=''){
+            $post["transaction_description"]=$transaction['transaction_description'];
+             }
              $post["transaction_account"]=$transaction['transaction_account'];
              $post["status_code"]=$transaction['status_code'];
              if(isset($routing[0]['token'])&&$routing[0]['token']!=''){
