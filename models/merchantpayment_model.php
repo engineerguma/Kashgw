@@ -188,7 +188,7 @@ class Merchantpayment_Model extends GeneralMerchant {
                 $merchant =$this->FindMerchant($stan_array);
              /////
                   if(empty($merchant)==false){
-                $res = $this->VerifyMerchantReference($stan_array['transaction_reference_number']);
+                 $res = $this->VerifyMerchantReference($stan_array['transaction_reference_number'],$merchant[0]['merchant_id']);
                   $response =array();
                     if(empty($res)==false){
                    $transaction = $this->GetTransaction($res[0]['transaction_id']);
@@ -246,7 +246,7 @@ class Merchantpayment_Model extends GeneralMerchant {
                   $prefix =$this->GetOperatorByPrefix($stan_array['transaction_account']);
                   if(empty($prefix)==false){
 
-                $res = $this->VerifyMerchantReference($stan_array['transaction_reference_number']);
+                $res = $this->VerifyMerchantReference($stan_array['transaction_reference_number'],$stan_array['merchant_id']);
                   $response =array();
                     if(empty($res)==false){
                    $transaction = $this->GetTransaction($res[0]['transaction_id']);
