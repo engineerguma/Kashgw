@@ -32,7 +32,7 @@ class Merchantpayment_Model extends GeneralMerchant {
       //  $operator =$this->FindOPerator($stan_array);
       //  if(empty($operator)==false){
       //  $stan_array['operator_id']=$operator[0]['operator_id'];
-    $this->log->LogRequest($log_name,"MerchantModel:  ProcessMerchantDebitRequest". var_export($operator,true),2);
+    $this->log->LogRequest($log_name,"MerchantModel:  ProcessMerchantDebitRequest". var_export($prefix,true),2);
        $rout_extension='debit';
       $this->MerchantHandler($stan_array,$rout_extension,$log_name);
       /* }else{

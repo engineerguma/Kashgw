@@ -38,7 +38,7 @@ class Databaseconfig extends PDO {
             'data_set' => $fieldlog,
             'user_id' => $user_id
         );
-        $this->DBOperationLog($logdata);
+      //  $this->DBOperationLog($logdata);
 
         return $res;
     }
@@ -63,7 +63,7 @@ class Databaseconfig extends PDO {
         }
 
         $sth->execute();
-        /*$now = date('Y-m-d H:i:s');
+        $now = date('Y-m-d H:i:s');
 	    	if(isset($_SESSION['uid'])){
 		      $user_id = $_SESSION['uid'];
 	      	}else{
@@ -77,7 +77,7 @@ class Databaseconfig extends PDO {
             'data_set' => $fieldlog,
             'user_id' => $user_id
         );
-        $this->DBOperationLog($logdata);*/
+      //  $this->DBOperationLog($logdata);
         return $sth;
     }
 
@@ -108,7 +108,7 @@ class Databaseconfig extends PDO {
             'query_executed' => $sql_statement,
             'user_id' => $user_id
         );
-        $this->DBOperationLog($logdata);
+      //  $this->DBOperationLog($logdata);
     }
 
     public function DBOperationLog($data) {
