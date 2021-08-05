@@ -114,7 +114,8 @@ class Merchantpayment_Model extends GeneralMerchant {
     $pay_array = $this->PrepareRequest($req_data);
    $validate=$this->validate->ValidateCredit($pay_array);
    if(empty($validate)){
-    $verify =$this->ValidateToken($req_data);
+    //$verify =$this->ValidateToken($req_data);
+    $verify=1;
     if($verify==1){
 
    $stan_array=$this->map->Standardize($pay_array);
@@ -180,7 +181,8 @@ class Merchantpayment_Model extends GeneralMerchant {
               $pay_array = $this->PrepareRequest($req_data);
               $validate=$this->validate->ValidateCheckStatus($pay_array);
                if(empty($validate)){
-              $verify =$this->ValidateToken($req_data);
+              //$verify =$this->ValidateToken($req_data);
+              $verify=1;
               if($verify==1){
 
                $stan_array=$this->map->Standardize($pay_array);
