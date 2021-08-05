@@ -41,10 +41,9 @@ class Mtnrwanda extends Controller {
         // Close the connection.
         header("Connection: close");
         // Flush all output.
-        ob_end_flush();
         ob_flush();
         flush();
-
+        ob_end_flush();
           if (is_callable('fastcgi_finish_request')) {
         // This works in Nginx but the next approach not
             fastcgi_finish_request();// important when using php-fpm!
