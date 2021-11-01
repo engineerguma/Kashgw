@@ -28,14 +28,20 @@ class Mapping {
         'status' => 'operator_status',
         'fri' => 'fri',
         'errorcode' => 'operator_status',
+        'code' => 'operator_status',
         'name' => 'error_name',
         'value' => 'error_value',
         ##from Airtel
         'command' => 'command',
         'txnstatus' => 'operator_status',
+        'success' => 'success',
         'message' => 'status_description',
+        'result_code' => 'result_code',
         'txnid' => 'operator_reference',
+        'airtel_money_id' => 'operator_reference',
         'exttrid' => 'transaction_reference_number',
+        'id' => 'transaction_reference_number',
+        'status_code' => 'operator_status',
         'extra' => 'extra',
         'type' => 'type',
     );
@@ -76,6 +82,18 @@ class Mapping {
                   $object = simplexml_load_string($xmln);
                   $array = $this->ObjectToArray($object);
                    $f_array = $this->ArrayFlattener($array);
+                  $stan=$this->StandardizeOperatorParams($f_array);
+               return $stan;
+              }
+
+
+              function FormatJSONtoArray($json_data){
+                    $array= json_decode($json_data,true);
+                    if(isset($array['data']['transaction'])){
+                    unset($array['status']);
+                    } //only for Airtel
+                   $f_array = $this->ArrayFlattener($array);
+                  //  print_r($array);die();
                   $stan=$this->StandardizeOperatorParams($f_array);
                return $stan;
               }
