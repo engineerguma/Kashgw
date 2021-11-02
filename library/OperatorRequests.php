@@ -17,7 +17,7 @@ class OperatorRequests extends Model {
       // $array =array('cert_key'=>$routing['cert_key'],'ca_authority'=>$routing['ca_authority']);
         $certificate = $this->GetSSLInfo($transaction['operator_id']);
        $result = $this->SendXMLByCURL($routing['routing_url'],$header,$xml,$log_name,$certificate[0]);
-    //   $this->log->LogRequest($log_name,"OperatorRequests:  ProcessMTNRequests  SendXMLByCURL response ". var_export($result,true),2);
+      // $this->log->LogRequest($log_name,"OperatorRequests:  ProcessMTNRequests  SendXMLByCURL response ". var_export($result,true),2);
 
         $array= $this->map->FormatXMLTOArray($result);
          $response =$this->HandleOperatorResponse($transaction,$array);
@@ -27,26 +27,51 @@ class OperatorRequests extends Model {
 
     function ProcessAirtelRequests($transaction,$routing,$log_name) {
 
-    //  $this->log->LogRequest($log_name,"OperatorRequests:  ProcessAirtelRequests  ". var_export($transaction,true),2);
-        $xml = $this->WriteGeneralXMLFile($routing, $transaction,$log_name);
+      //$this->log->LogRequest($log_name,"OperatorRequests:  ProcessAirtelRequests  ". var_export($transaction,true),2);
 
        $this->Airtel = new AirtelMoney();
-       $header=['Content-Type: application/xml','Accept: application/xml'];
-       $token = $this->Airtel->GenerateJWToken($xml);
-       $auth_header=['Authorization: Bearer '.$token];
+       $header=['Content-Type: application/json',
+       'Accept: application/json',
+        ];
+
+       $token = $this->Airtel->getToken($header,$log_name);
+       $token = json_decode($token,true);
+
+        if(isset($token['access_token'])){
+       $auth_header=['X-Country: '.COUNTRY,
+         'X-Currency: '.CURRENCY,
+         'Authorization: Bearer '.$token['access_token']];
        $header = array_merge($header,$auth_header);
+
       // $this->log->LogRequest($log_name,"OperatorRequests:  ProcessAirtelRequests Header  ". var_export($header,true),2);
+       if(isset($routing['status'])&&$routing['status']==1){
+      $req_data = $this->Airtel->{ucfirst($transaction['transaction_type']).'Status'}($transaction,$header,$log_name);
+        }else{
+      $req_data = $this->Airtel->{$transaction['transaction_type']}($transaction,$header,$log_name);
 
-       $result = $this->SendXMLByCURL($routing['routing_url'],$header,$xml,$log_name);
-       //$this->log->LogRequest($log_name,"OperatorRequests:  ProcessAirtelRequests   SendXMLByCURL response ". var_export($result,true),2);
+        }
 
-        $array= $this->map->FormatXMLTOArray($result);
+      // $this->log->LogRequest($log_name,"OperatorRequests:  ProcessAirtelRequests   SendXMLByCURL response ". var_export($result,true),2);
+        $array= $this->map->FormatJSONtoArray($req_data);
+    //    print_r($array);die();
 
       //  $this->log->LogRequest($log_name,"OperatorRequests:  ProcessAirtelRequests  Converted Arry ". var_export($array,true),2);
+      $response=  $this->Airtel->HandleOperatorResponse($transaction,$array,$log_name);
 
-      //  print_r($array);die();
-        $this->Airtel = new AirtelMoney();
-        $response=  $this->Airtel->HandleOperatorResponse($transaction,$array,$log_name);
+
+    }else{  //token request failed
+
+      if(isset($routing['status'])&&$routing['status']==1){
+        $response=0; // for failed token status
+       }else{
+
+     $array['operator_status']='token_error';
+     $response=  $this->Airtel->HandleOperatorResponse($transaction,$array,$log_name);
+
+       }
+
+    }
+  $this->log->LogRequest($log_name,"HandleOperatorResponse:  ProcessAirtelRequests   ". var_export($response,true),2);
 
         return $response;
       }
