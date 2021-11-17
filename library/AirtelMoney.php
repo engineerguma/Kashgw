@@ -16,16 +16,17 @@ class AirtelMoney extends Model {
       if(isset($operator_resp['transaction_reference_number'])&&strtolower($operator_resp['transaction_reference_number'])=='$exttrid'){
         unset($operator_resp['transaction_reference_number']);
       }
-      if(isset($operator_resp['operator_status'])&&$operator_resp['operator_status']=='success.'&&$transaction['transaction_type']=='debit'){
+      if(isset($operator_resp['operator_status'])&&strtolower($operator_resp['operator_status'])=='success'&&$transaction['transaction_type']=='debit'){
          $operator_resp['operator_status']='pending';
       }
-      if(isset($operator_resp['operator_status'])&&$operator_resp['operator_status']=='tip'&&$transaction['transaction_type']=='debit'){
+      if(isset($operator_resp['operator_status'])&&strtolower($operator_resp['operator_status'])=='tip'&&$transaction['transaction_type']=='debit'){
          $operator_resp['operator_status']='pending';
       }
-      /*if(isset($operator_resp['operator_reference'])&&$transaction['transaction_type']=='credit'&&$operator_resp['operator_reference']!=''){
+      if(isset($operator_resp['operator_reference'])&&isset($operator_resp['reference_id'])&&$transaction['transaction_type']=='credit'&&$operator_resp['operator_reference']!=''){
+         $operator_resp['operator_reference']=$operator_resp['reference_id'];
          $operator_resp['operator_status']='successful';
-      }*/
-      if(isset($operator_resp['operator_status'])&&$operator_resp['operator_status']=='ts'&&isset($operator_resp['operator_reference'])){
+      }
+      if(isset($operator_resp['operator_status'])&&strtolower($operator_resp['operator_status'])=='ts'&&isset($operator_resp['operator_reference'])){
          $operator_resp['operator_status']='successful';
       }
       $error_codes=$this->MatchAirtelRespcodes($operator_resp['operator_status']);

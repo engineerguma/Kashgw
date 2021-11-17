@@ -28,7 +28,7 @@ class Mapping {
         'status' => 'operator_status',
         'fri' => 'fri',
         'errorcode' => 'operator_status',
-        'code' => 'operator_status',
+        'code' => 'status_code',
         'name' => 'error_name',
         'value' => 'error_value',
         ##from Airtel
@@ -37,8 +37,10 @@ class Mapping {
         'success' => 'success',
         'message' => 'status_description',
         'result_code' => 'result_code',
+        'response_code' => 'response_code',
         'txnid' => 'operator_reference',
         'airtel_money_id' => 'operator_reference',
+        'reference_id' => 'reference_id',
         'exttrid' => 'transaction_reference_number',
         'id' => 'transaction_reference_number',
         'status_code' => 'operator_status',
@@ -65,7 +67,7 @@ class Mapping {
                         $standard_key = $this->_match_up_operator_params[strtolower($key)];
                     // print_r($value);die();
                         if (!empty($standard_key)) {
-                            $result_array[$standard_key] = strtolower($value);
+                            $result_array[$standard_key] = $value;
                         }
                     }
                     return $result_array;
@@ -90,10 +92,10 @@ class Mapping {
               function FormatJSONtoArray($json_data){
                     $array= json_decode($json_data,true);
                     if(isset($array['data']['transaction'])){
-                    unset($array['status']);
+                    //unset($array['status']);
                     } //only for Airtel
                    $f_array = $this->ArrayFlattener($array);
-                  //  print_r($array);die();
+                  //  print_r($f_array);die();
                   $stan=$this->StandardizeOperatorParams($f_array);
                return $stan;
               }
