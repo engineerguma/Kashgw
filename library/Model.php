@@ -310,28 +310,28 @@ class Model {
 
         function MatchOPeratorRespcodes($status){
          $statuscode =array();
-    		if($status=='successful'){
+    		if(strtolower($status)=='successful'){
     		$statuscode['transaction_status']='completed';
     		$statuscode['status_code']=200;
-    		}else if($status=='pending'){
+      }else if(strtolower($status)=='pending'){
           $statuscode['transaction_status']='pending';
       		$statuscode['status_code']=202;
-    		}else if($status=='target_authorization_error'){
+    		}else if(strtolower($status)=='target_authorization_error'){
           $statuscode['transaction_status']='failed';
       		$statuscode['status_code']='balance_insufficient';
-    		}else if($status=='not_enough_funds'){
+    		}else if(strtolower($status)=='not_enough_funds'){
           $statuscode['transaction_status']='failed';
       		$statuscode['status_code']='not_enough_funds';
-    		}else if($status=='authorization_sender_account_not_active'){
+    		}else if(strtolower($status)=='authorization_sender_account_not_active'){
           $statuscode['transaction_status']='failed';
       		$statuscode['status_code']='account_not_active';
-        }else if($status=='accountholder_with_fri_not_found'){
+        }else if(strtolower($status)=='accountholder_with_fri_not_found'){
           $statuscode['transaction_status']='failed';
       		$statuscode['status_code']='account_not_found';
-    		}else if($status=='reference_id_already_in_use'){
+    		}else if(strtolower($status)=='reference_id_already_in_use'){
           $statuscode['transaction_status']='failed';
       		$statuscode['status_code']='duplicate_transactiom_reference_number';
-    		}else if($status=='not_found'){
+    		}else if(strtolower($status)=='not_found'){
       		$statuscode['status_code']='transactiom_reference_not_foound';
     		}else{
           $statuscode['transaction_status']='failed';
