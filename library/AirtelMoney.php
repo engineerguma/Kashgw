@@ -82,12 +82,13 @@ class AirtelMoney extends Model {
     }
 
     function Credit($transaction,$header,$log){ //DisbursementRequests
+      $hashed_pin= $this->hash_pin($log);
    $data=[
         "payee"=>[
           "msisdn"=> substr($transaction['transaction_account'], 3)
         ],
-        "reference"=> $transaction['transaction_id'],
-        "pin"=>  "WT4i4CSxeV7XcpU+gLsmjHdqXTRd96W9TTfvjNuaoB7keHEZSl2wgSWb7ByRURg1INRZhiYN/hiZpYncGz8BlMaTJ4t9GQyZSxicrFQsNKndFjNqgPK+0izALASVZUru8D4kMZ/Nm7XLOFCgUyg+eKrW70+6TWGLBrXxPwXs4ug=",
+        "reference"=> 'PALM_'.$transaction['transaction_id'],
+        "pin"=> $hashed_pin,
         "transaction"=> [
           "amount"=>  $transaction['transaction_amount'],
           "id"=> $transaction['transaction_reference_number']
@@ -111,7 +112,7 @@ class AirtelMoney extends Model {
     }
 
 
-    function hash($log){
+    function hash_pin($log){
 
     $sensitiveData= AM_WD_PIN;
       $publicKey = openssl_pkey_get_public(file_get_contents('airtel_public.pem'));
