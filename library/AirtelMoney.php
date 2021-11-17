@@ -69,6 +69,7 @@ class AirtelMoney extends Model {
 
       $post_data= json_encode($data);
       $request = $this->SendByCURL(AM_BASE_URL.'/merchant/v1/payments/',$header,$post_data,$log);
+      $this->log->LogRequest($log,"AirtelMoney:  Debit::Response  ". var_export($request,true),2);
       return $request;
     }
 
@@ -95,6 +96,8 @@ class AirtelMoney extends Model {
 
       $post_data= json_encode($data);
      $request = $this->SendByCURL(AM_BASE_URL.'/standard/v1/disbursements/',$header,$post_data,$log);
+
+     $this->log->LogRequest($log,"AirtelMoney:  Credit::Response  ". var_export($request,true),2);
 
       return $request;
     }
