@@ -16,7 +16,7 @@ class AirtelMoney extends Model {
       if(isset($operator_resp['transaction_reference_number'])&&strtolower($operator_resp['transaction_reference_number'])=='$exttrid'){
         unset($operator_resp['transaction_reference_number']);
       }
-      if(isset($operator_resp['operator_status'])&&strtolower($operator_resp['operator_status'])=='success'&&$transaction['transaction_type']=='debit'){
+      if(isset($operator_resp['operator_status'])&&strtolower($operator_resp['operator_status'])=='success.'&&$transaction['transaction_type']=='debit'){
          $operator_resp['operator_status']='pending';
       }
       if(isset($operator_resp['operator_status'])&&strtolower($operator_resp['operator_status'])=='tip'&&$transaction['transaction_type']=='debit'){
