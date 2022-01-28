@@ -313,7 +313,10 @@ class Model {
     		if(strtolower($status)=='successful'){
     		$statuscode['transaction_status']='completed';
     		$statuscode['status_code']=200;
-      }else if(strtolower($status)=='pending'){
+      }else if(strtolower($status)=='failed'){
+    		$statuscode['transaction_status']='failed';
+    		$statuscode['status_code']='general_error';
+       }else if(strtolower($status)=='pending'){
           $statuscode['transaction_status']='pending';
       		$statuscode['status_code']=202;
     		}else if(strtolower($status)=='target_authorization_error'){
