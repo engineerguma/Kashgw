@@ -59,7 +59,7 @@ class GeneralMerchant extends Model {
       ob_flush();
       flush();
       ob_end_flush();
-         
+
         if (is_callable('fastcgi_finish_request')) {
       //This works in Nginx but the next approach not
           fastcgi_finish_request();// important when using php-fpm!
@@ -69,7 +69,7 @@ class GeneralMerchant extends Model {
             session_write_close();
         }
 
-
+          sleep(8);
         //Make Request To Merchant Application & Process the Merchant Results
            $trans_data=array_merge($transaction[0],$post_data);
         $operator_response = $this->ProcessOperatorRequest($trans_data,$log_name);
