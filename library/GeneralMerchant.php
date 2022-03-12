@@ -69,7 +69,7 @@ class GeneralMerchant extends Model {
             session_write_close();
         }
 
-          sleep(6);
+          sleep(8);
         //Make Request To Merchant Application & Process the Merchant Results
            $trans_data=array_merge($transaction[0],$post_data);
         $operator_response = $this->ProcessOperatorRequest($trans_data,$log_name);
