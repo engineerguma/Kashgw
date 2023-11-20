@@ -8,11 +8,11 @@ class Airtelrwanda_Model extends GeneralOperator {
 
 
 
-    function ProcessDebitCompletedRequest($req_data,$log_name){
+    function ProcessDebitCompletedRequest($req_data,$log_name,$worker){
 
             $req_array = $this->map->FormatJSONtoArray($req_data);
             //print_r($req_array);die();
-            $this->log->LogRequest($log_name,"AirtelrwandaModel:  ProcessDebitCompletedRequest data ". var_export($req_array,true),2);
+            $this->log->LogRequest($log_name,$worker."AirtelrwandaModel:  ProcessDebitCompletedRequest data ". var_export($req_array,true),2);
 
       $transaction = $this->getMerchantReference($req_array['transaction_reference_number']);
 
@@ -53,13 +53,13 @@ class Airtelrwanda_Model extends GeneralOperator {
 
       $error_codes=$this->MatchOPeratorRespcodes($req_array['operator_status']);
       $combined =array_merge($req_array,$error_codes);
-     $this->log->LogRequest($log_name,"AirtelrwandaModel:  ProcessDebitCompletedRequest log merged data". var_export($combined,true),2);
-       $this->OperatorHandler($combined,$transaction,$log_name);
+     $this->log->LogRequest($log_name,$worker."AirtelrwandaModel:  ProcessDebitCompletedRequest log merged data". var_export($combined,true),2);
+       $this->OperatorHandler($combined,$transaction,$log_name,$worker);
                 }else{
 
               header("HTTP/1.0 404 Not Found");
-
-        $this->log->LogRequest($log_name,"AirtelrwandaModel:  ProcessDebitCompletedRequest exited reference not found ",3);
+           echo 'Ref '.$req_array['transaction_reference_number']." ws not found";
+        $this->log->LogRequest($log_name,$worker."AirtelrwandaModel:  ProcessDebitCompletedRequest exited reference not found ",3);
                 die();
                    }
 

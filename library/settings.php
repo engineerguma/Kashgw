@@ -40,3 +40,8 @@ define('max_debit',$conf['limits']['debit_max']);
 
 define('COUNTRY',$conf['limits']['country']);
 define('CURRENCY',$conf['limits']['currency']);
+
+
+define('FLUTTER_CHARGE_URL',$conf['flutter']['charge_url']);
+define('FLUTTER_ENCRYPT_KEY',$conf['flutter']['encrypy_key']);
+define('FLUTTER_CHARGE_SEC',$conf['flutter']['secret_key']);

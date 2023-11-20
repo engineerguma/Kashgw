@@ -20,9 +20,11 @@ class Mtnrwanda extends Controller {
 
     function DebitCompleted($req=false){
 
+        $worker = "Thread_ID_".getmypid()."::";
         $xml_request = file_get_contents('php://input');
         if(!empty($xml_request)){
-        $log_file_name = $this->model->log->LogRequest('req_from_mtn',$xml_request,1);
+
+        $this->model->log->LogRequest('req_from_mtn',$worker."Mtnrwanda:  DebitCompleted data ". var_export($xml_request,true),1);
 
         //release client
         header('Content-Type: text/xml');

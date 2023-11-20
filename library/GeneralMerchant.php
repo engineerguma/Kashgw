@@ -6,15 +6,15 @@ class GeneralMerchant extends Model {
         parent::__construct();
     }
 
-     function ProcessCallOperator($transaction,$routing,$log_name){
+     function ProcessCallOperator($transaction,$routing,$log_name,$worker){
 
             $this->operator = new OperatorRequests();
-          return  $this->operator->{$routing['operator_process']}($transaction,$routing,$log_name);
+          return  $this->operator->{$routing['operator_process']}($transaction,$routing,$log_name,$worker);
      }
 
-    function MerchantHandler($post_data,$route_extension,$log_name) {
+    function MerchantHandler($post_data,$route_extension,$log_name,$worker) {
 
-      $this->log->LogRequest($log_name,"GeneralMerchant:  MerchantHandler ". var_export($post_data,true),2);
+      $this->log->LogRequest($log_name,$worker."GeneralMerchant:  MerchantHandler ". var_export($post_data,true),2);
 
         //Check Whether the transaction Is Duplicate:
         $res = $this->VerifyMerchantReference($post_data['transaction_reference_number'],$post_data['merchant_id']);
@@ -26,7 +26,7 @@ class GeneralMerchant extends Model {
             $response["status_description"]="Duplicate transaction reference number ".$post_data['transaction_reference_number'];
             $response["status_code"]='duplicate_transactiom_reference_number';
             $json_resp =json_encode($response);
-            $this->log->LogRequest($log_name,"GeneralMerchant:  Duplicate transaction reference number ". var_export($json_resp,true),3);
+            $this->log->LogRequest($log_name,$worker."GeneralMerchant:  Duplicate transaction reference number ". var_export($json_resp,true),3);
 
             header('Content-Type: application/json');
             echo $json_resp;
@@ -35,13 +35,13 @@ class GeneralMerchant extends Model {
         //Post Transaction To DB:
         $data = $this->PrepareToSaveMerchData($post_data);
 
-        $this->log->LogRequest($log_name,"GeneralMerchant:  PrepareToSaveMerchData  ". var_export($data,true),2);
+        $this->log->LogRequest($log_name,$worker."GeneralMerchant:  PrepareToSaveMerchData  ". var_export($data,true),2);
 
         $trans_id = $this->SaveTransactionRecord($data);
 
         //Get The Transaction For Future Use:
         $transaction = $this->GetTransaction($trans_id);
-        $this->log->LogRequest($log_name,"GeneralMerchant:  Transaction record  ". var_export($transaction,true),2);
+        $this->log->LogRequest($log_name,$worker."GeneralMerchant:  Transaction record  ". var_export($transaction,true),2);
      /*  */
       $pending_resp=$this->PrepareMerchantResponse($transaction[0]);
       while(ob_get_level())ob_end_clean();
@@ -72,39 +72,39 @@ class GeneralMerchant extends Model {
           sleep(8);
         //Make Request To Merchant Application & Process the Merchant Results
            $trans_data=array_merge($transaction[0],$post_data);
-        $operator_response = $this->ProcessOperatorRequest($trans_data,$log_name);
+        $operator_response = $this->ProcessOperatorRequest($trans_data,$log_name,$worker);
 
-        $this->log->LogRequest($log_name,"GeneralMerchant:  ProcessOperatorRequest Response  ". var_export($operator_response,true),2);
+        $this->log->LogRequest($log_name,$worker."GeneralMerchant:  ProcessOperatorRequest Response  ". var_export($operator_response,true),2);
 
         //Wrap Up Transaction Processing And Prepare & Send Service Provider Response:
-        $this->CloseTransaction($log_name,$transaction[0],$operator_response);
+        $this->CloseTransaction($log_name,$worker,$transaction[0],$operator_response);
         $transact = $this->GetTransaction($trans_id);
 
 
         if($transact[0]['transaction_status']=='failed'||$transact[0]['transaction_type']=='credit'){
           if($transact[0]['transaction_source']!='ussd'){
-            $this->SendMerchantCompletedRequest($transact[0],$log_name);
+            $this->SendMerchantCompletedRequest($transact[0],$log_name,$worker);
           }
         }
 
-        $this->log->LogRequest($log_name,"GeneralMerchant:  Completed Processing ",3);
+        $this->log->LogRequest($log_name,$worker."GeneralMerchant:  Completed Processing ",3);
 
        exit();
     }
 
 
 
-    function ProcessOperatorRequest($transaction,$log_name) {
+    function ProcessOperatorRequest($transaction,$log_name,$worker) {
       $response =array();
-      $this->log->LogRequest($log_name,"GeneralMerchant:  ProcessOperatorRequest  ". var_export($transaction,true),2);
+      $this->log->LogRequest($log_name,$worker."GeneralMerchant:  ProcessOperatorRequest  ". var_export($transaction,true),2);
       $routing_permissions= $this->GetMerchantRoutingPermissions($transaction['operator_id'],$transaction['merchant_id'],$transaction['transaction_type']);
       //print_r($routing_permissions);die();
       if(empty($routing_permissions)==false){
       $routing = $this->GetOperatorRouting($transaction['operator_id'],$transaction['transaction_type']);
       if(empty($routing)==false){
          //print_r($transaction);die();
-         $this->log->LogRequest($log_name,"GeneralMerchant:  ProcessOperatorRequest::GetOperatorRouting  ". var_export($routing,true),2);
-        $result= $this->ProcessCallOperator($transaction,$routing[0],$log_name);
+         $this->log->LogRequest($log_name,$worker."GeneralMerchant:  ProcessOperatorRequest::GetOperatorRouting  ". var_export($routing,true),2);
+        $result= $this->ProcessCallOperator($transaction,$routing[0],$log_name,$worker);
 
         return $result;
         }else{ //Has no Routing permissions

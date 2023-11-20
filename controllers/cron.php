@@ -17,7 +17,8 @@ class Cron extends Controller {
 
 
         function checkTransactionStatus(){
-        $response=$this->model->ProcessCheckStatusRequest('status_check');
+        $worker = "Worker_ID_".getmypid()."::";
+        $response=$this->model->ProcessCheckStatusRequest('status_check',$worker);
 
         }
 

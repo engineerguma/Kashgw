@@ -7,17 +7,17 @@ class MtnMobileMoney extends Model {
     }
 
 
-    function ProcessAirtelRequests($transaction,$routing,$log_name) {
+    function ProcessAirtelRequests($transaction,$routing,$log_name,$worker) {
 
-      $this->log->LogRequest($log_name,"OperatorRequests:  ProcessMTNRequests  ". var_export($transaction,true),2);
-        $xml = $this->WriteGeneralXMLFile($routing, $transaction,$log_name);
+      $this->log->LogRequest($log_name,$worker."OperatorRequests:  ProcessMTNRequests  ". var_export($transaction,true),2);
+        $xml = $this->WriteGeneralXMLFile($routing, $transaction,$log_name,$worker);
 
        $header =$this->PrepareBasicAuthHeader($routing);
-       $this->log->LogRequest($log_name,"OperatorRequests:  ProcessMTNRequests Header  ". var_export($header,true),2);
+       $this->log->LogRequest($log_name,$worker."OperatorRequests:  ProcessMTNRequests Header  ". var_export($header,true),2);
       // $array =array('cert_key'=>$routing['cert_key'],'ca_authority'=>$routing['ca_authority']);
         $certificate = $this->GetSSLInfo($transaction['operator_id']);
-       $result = $this->SendXMLByCURL($routing['routing_url'],$header,$xml,$log_name,$certificate[0]);
-       $this->log->LogRequest($log_name,"OperatorRequests:  SendXMLByCURL response ". var_export($result,true),2);
+       $result = $this->SendXMLByCURL($routing['routing_url'],$header,$xml,$log_name,$worker,$certificate[0]);
+       $this->log->LogRequest($log_name,$worker."OperatorRequests:  SendXMLByCURL response ". var_export($result,true),2);
 
         $array= $this->map->FormatXMLTOArray($result);
          $response =$this->HandleOperatorResponse($transaction,$array);
@@ -48,12 +48,12 @@ class MtnMobileMoney extends Model {
 
 
 
-              function SendXMLByCURL($url,$header,$xml,$log_name,$cert=false) {
+              function SendXMLByCURL($url,$header,$xml,$log_name,$worker,$cert=false) {
                   //print_r($cert);die();
                 $momo_genID = date("ymdhis");
                 /*  $content= '<?xml version="1.0" encoding="UTF-8"?> <ns0:debitresponse xmlns:ns0="http://www.ericsson.com/em/emm/financial/v1_0"><transactionid>'.$momo_genID.'</transactionid><status>PENDING</status></ns0:debitresponse>';
                      return $content;  */
-                $this->log->LogRequest($log_name,"OperatorRequests:  SendByCURL  beginning url ".$url." Xml". var_export($xml,true),2);
+                $this->log->LogRequest($log_name,$worker"OperatorRequests:  SendByCURL  beginning url ".$url." Xml". var_export($xml,true),2);
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_HEADER, 0);
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -73,10 +73,10 @@ class MtnMobileMoney extends Model {
                 $content = curl_exec($ch);
                 if (curl_errno($ch) > 0) {
                 $content= curl_error($ch);
-                $this->log->LogRequest($log_name,$content,2);
+                $this->log->LogRequest($log_name,$worker,$content,2);
                   }
                   curl_close($ch);
-                  //$this->log->LogRequest($log_name,$content,2);
+                  //$this->log->LogRequest($log_name,$worker,$content,2);
                   //print_r($content);die();
                 return $content;
                 }

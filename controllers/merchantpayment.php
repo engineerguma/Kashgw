@@ -19,8 +19,9 @@ class Merchantpayment extends Controller {
  	   if(json_decode($jsonrequest) != NULL){
         $postdata = json_decode($jsonrequest,true);
         $postdata['request']='debit';
-        $log_file_name = $this->model->log->LogRequest('req_from_merchant',"Starting Debit". var_export($jsonrequest,true),1);
-        $this->model->ProcessMerchantDebitRequest($postdata, 'req_from_merchant');
+        $worker = "Thread_ID_".getmypid()."::";
+        $log_file_name = $this->model->log->LogRequest('req_from_merchant',$worker ."Starting Debit". var_export($jsonrequest,true),1);
+        $this->model->ProcessMerchantDebitRequest($postdata, 'req_from_merchant',$worker);
 	     }else{
     $general=array('status'=>400,
                    'message'=>'Bad Request');
@@ -35,8 +36,9 @@ class Merchantpayment extends Controller {
          	   if(json_decode($jsonrequest) != NULL){
                 $postdata = json_decode($jsonrequest,true);
                 $postdata['request']='debit';
-                $log_file_name = $this->model->log->LogRequest('req_from_ussd',"Starting Debit". var_export($jsonrequest,true),1);
-                $this->model->ProcessUSSDDebitRequest($postdata, 'req_from_ussd');
+                $worker = "Thread_ID_".getmypid()."::";
+                $log_file_name = $this->model->log->LogRequest('req_from_ussd',$worker ."Starting Debit". var_export($jsonrequest,true),1);
+                $this->model->ProcessUSSDDebitRequest($postdata, 'req_from_ussd',$worker);
         	     }else{
             $general=array('status'=>400,
                            'message'=>'Bad Request');
@@ -50,8 +52,9 @@ class Merchantpayment extends Controller {
  	   if(json_decode($jsonrequest) != NULL){
         $postdata = json_decode($jsonrequest,true);
         $postdata['request']='credit';
-        $log_file_name = $this->model->log->LogRequest('req_from_merchant',"Starting Credit". var_export($jsonrequest,true),1);
-        $this->model->ProcessMerchantCreditRequest($postdata,'req_from_merchant');
+        $worker = "Thread_ID_".getmypid()."::";
+        $log_file_name = $this->model->log->LogRequest('req_from_merchant',$worker ."Starting Credit". var_export($jsonrequest,true),1);
+        $this->model->ProcessMerchantCreditRequest($postdata,'req_from_merchant',$worker);
 	   }else{
     $general=array('status'=>400,
                    'message'=>'Bad Request');
@@ -65,8 +68,9 @@ class Merchantpayment extends Controller {
      	   if(json_decode($jsonrequest) != NULL){
             $postdata = json_decode($jsonrequest,true);
             $postdata['request']='kyc';
-            $log_file_name = $this->model->log->LogRequest('req_from_merchant',"Starting Credit". var_export($jsonrequest,true),1);
-            $this->model->ProcessAccountInformationRequest($postdata,'req_from_merchant');
+            $worker = "Thread_ID_".getmypid()."::";
+            $log_file_name = $this->model->log->LogRequest('req_from_merchant', $worker."Starting Credit". var_export($jsonrequest,true),1);
+            $this->model->ProcessAccountInformationRequest($postdata,'req_from_merchant',$worker);
     	   }else{
         $general=array('status'=>400,
                        'message'=>'Bad Request');
@@ -79,11 +83,12 @@ class Merchantpayment extends Controller {
           $jsonrequest = file_get_contents('php://input');
    	     if(json_decode($jsonrequest) != NULL){
           $json_data = json_decode($jsonrequest,true);
-         $this->model->log->LogRequest('req_from_merchant',$jsonrequest,1);
-          $response=$this->model->ProcessCheckStatusRequest($json_data, 'req_from_merchant');
+            $worker = "Thread_ID_".getmypid()."::";
+         //$this->model->log->LogRequest('req_from_merchant',$jsonrequest,1);
+          $response=$this->model->ProcessCheckStatusRequest($json_data, 'req_from_merchant',$worker);
 
           $json_resp=json_encode($response);
-          $this->model->log->LogRequest('req_from_merchant',"Merchant::  checkTransactionStatus  Response to Mrchant ". var_export($response,true),3);
+          $this->model->log->LogRequest('req_from_merchant', $worker."Merchant::  checkTransactionStatus  Response to Mrchant ". var_export($response,true),3);
 
          header('Content-Type: application/json');
          echo $json_resp;

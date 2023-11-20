@@ -10,8 +10,9 @@ class Index_Model extends Model {
    function ProcessStatus(){
 
       $log_name ="status_test";
+      $worker = "Thread_ID_".getmypid()."::";
      $routing = $this->GetOperatorRouting(1,'status');
-     $this->log->LogRequest($log_name,"Index_Model:  ProcessStatus  Entered ",2);
+     $this->log->LogRequest($log_name,$worker."Index_Model:  ProcessStatus  Entered ",2);
 
        $certificate = $this->GetSSLInfo(1);
      $header=['Authorization: Basic '.base64_encode($routing[0]['req_username'].":".$routing[0]['req_password']),
@@ -21,16 +22,16 @@ class Index_Model extends Model {
 </ns2:gettransactionstatusrequest>';
 
 
- return $this->SendTestByCURL($log_name,$routing[0]['routing_url'],$header,$xml,$certificate[0]);
+ return $this->SendTestByCURL($log_name,$worker,$routing[0]['routing_url'],$header,$xml,$certificate[0]);
 
    }
 
 
 
 
-                 function SendTestByCURL($log_name,$url,$header,$xml,$cert=false) {
+                 function SendTestByCURL($log_name,$worker,$url,$header,$xml,$cert=false) {
                   //   print_r($header);die();
-                  $this->log->LogRequest($log_name,"Index_Model:  SendTestByCURL  about to send ".$url." Xml". var_export($xml,true),2);
+                  $this->log->LogRequest($log_name,$worker."Index_Model:  SendTestByCURL  about to send ".$url." Xml". var_export($xml,true),2);
 
                    $ch = curl_init();
                    curl_setopt($ch, CURLOPT_HEADER, 0);
@@ -49,14 +50,14 @@ class Index_Model extends Model {
                   // curl_setopt($ch, CURLOPT_CAINFO, CERT_PATH.$cert['ca_authority'].".crt");
                    }
                    $content = curl_exec($ch);
-                   $this->log->LogRequest($log_name,"Index_Model:  SendTestByCURL  Response Xml". var_export(curl_info,true),2);
+                   $this->log->LogRequest($log_name,$worker."Index_Model:  SendTestByCURL  Response Xml". var_export(curl_info,true),2);
 
                    if (curl_errno($ch) > 0) {
                    $content= curl_error($ch);
                      }
                      curl_close($ch);
                      //print_r($content);die();
-            $this->log->LogRequest($log_name,"Index_Model:  SendTestByCURL  Response Xml". var_export($content,true),3);
+            $this->log->LogRequest($log_name,$worker."Index_Model:  SendTestByCURL  Response Xml". var_export($content,true),3);
 
                    return $content;
                    }

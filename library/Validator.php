@@ -17,6 +17,24 @@ class Validator{
   return $errors;
  }
 
+ function ValidateCardPayment($data){
+   $required = array();
+   $required['token'] = 'required';
+   $required['transaction_amount'] = 'required';
+   $required['transaction_account'] = 'required';
+   $required['transaction_reference_number'] = 'required';
+   $required['merchant_account'] = 'required';
+   $required['email'] = 'required';
+   $required['full_name'] = 'required';
+   $required['expiry_month'] = 'required';
+   $required['transaction_currency'] = 'required';
+   $required['expiry_year'] = 'required';
+   $required['cvv'] = 'required';
+
+   $errors=$this->loopData($data,$required);
+  return $errors;
+ }
+
  function ValidateDebit($data){
    $required = array();
    $required['token'] = 'required';

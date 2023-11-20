@@ -22,8 +22,9 @@ class Airtelrwanda extends Controller {
 
         $request = file_get_contents('php://input');
         if(!empty($request)){
-        $log_file_name = $this->model->log->LogRequest('req_from_airtel',$request,1);
-        $req =$this->model->ProcessDebitCompletedRequest($request,'req_from_airtel');
+        $worker = "Thread_ID_".getmypid()."::";
+        $this->model->log->LogRequest('req_from_airtel',$worker."Airtelrwanda:  DebitCompleted data ". var_export($request,true),1);
+        $req =$this->model->ProcessDebitCompletedRequest($request,'req_from_airtel',$worker);
       }else{
         $general=array('status'=>403,
                        'message'=>'Seems you are not authorized');

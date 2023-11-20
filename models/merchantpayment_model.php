@@ -10,7 +10,7 @@ class Merchantpayment_Model extends GeneralMerchant {
      * Core Merchant Functions
      */
 
-    function ProcessMerchantDebitRequest($req_data,$log_name) {
+    function ProcessMerchantDebitRequest($req_data,$log_name,$worker) {
 	    //print_r($req_data);die();
     $pay_array = $this->PrepareRequest($req_data);
     $validate=$this->validate->ValidateDebit($pay_array);
@@ -32,38 +32,38 @@ class Merchantpayment_Model extends GeneralMerchant {
       //  $operator =$this->FindOPerator($stan_array);
       //  if(empty($operator)==false){
       //  $stan_array['operator_id']=$operator[0]['operator_id'];
-    $this->log->LogRequest($log_name,"MerchantModel:  ProcessMerchantDebitRequest". var_export($prefix,true),2);
+    $this->log->LogRequest($log_name,$worker."MerchantModel:  ProcessMerchantDebitRequest". var_export($prefix,true),2);
        $rout_extension='debit';
-      $this->MerchantHandler($stan_array,$rout_extension,$log_name);
+      $this->MerchantHandler($stan_array,$rout_extension,$log_name,$worker);
       /* }else{
-       $this->RespondError("operator Account ".$stan_array['operator']." was not found",401,$log_name);
+       $this->RespondError("operator Account ".$stan_array['operator']." was not found",401,$log_name,$worker);
       } */
 
         }else{
-       $this->RespondError("Operator not supported for ".$stan_array['transaction_account']." ",401,$log_name);
+       $this->RespondError("Operator not supported for ".$stan_array['transaction_account']." ",401,$log_name,$worker);
         }
 
         }else{
-       $this->RespondError("Mechant Account ".$stan_array['merchant_account']." was not found",401,$log_name);
+       $this->RespondError("Mechant Account ".$stan_array['merchant_account']." was not found",401,$log_name,$worker);
         }
 
           }else{
-      $this->RespondError($stan_array['error'],401,$log_name);
+      $this->RespondError($stan_array['error'],401,$log_name,$worker);
           }
 
           }else{
 
-      $this->RespondError("Compromised requst data",400,$log_name);
+      $this->RespondError("Compromised requst data",400,$log_name,$worker);
           }
 
 
         }else{
-            $this->RespondError($validate,400,$log_name);
+            $this->RespondError($validate,400,$log_name,$worker);
         }
 
     }
 
-    function ProcessUSSDDebitRequest($req_data,$log_name) {
+    function ProcessUSSDDebitRequest($req_data,$log_name,$worker) {
 	    //print_r($req_data);die()
     $pay_array = $this->PrepareRequest($req_data);
     $validate=$this->validate->ValidateUSSDDebit($pay_array);
@@ -82,101 +82,101 @@ class Merchantpayment_Model extends GeneralMerchant {
      if(empty($operator)==false){
         $stan_array['operator_id']=$operator[0]['operator_id'];
           //  print_r($stan_array);die();
-    $this->log->LogRequest($log_name,"MerchantModel:  ProcessUSSDDebitRequest". var_export($merchant,true),2);
+    $this->log->LogRequest($log_name,$worker."MerchantModel:  ProcessUSSDDebitRequest". var_export($merchant,true),2);
        $rout_extension='debit';
-      $this->MerchantHandler($stan_array,$rout_extension,$log_name);
+      $this->MerchantHandler($stan_array,$rout_extension,$log_name,$worker);
         }else{
-       $this->RespondError("operator Account ".$stan_array['operator']." was not found",401,$log_name);
+       $this->RespondError("operator Account ".$stan_array['operator']." was not found",401,$log_name,$worker);
         }
 
         }else{
-       $this->RespondError("Mechant Account ".$stan_array['merchant_account']." was not found",401,$log_name);
+       $this->RespondError("Mechant Account ".$stan_array['merchant_account']." was not found",401,$log_name,$worker);
         }
 
           }else{
-      $this->RespondError($stan_array['error'],401,$log_name);
+      $this->RespondError($stan_array['error'],401,$log_name,$worker);
           }
 
           }else{
 
-                 $this->RespondError("Compromised requst data",400,$log_name);
+                 $this->RespondError("Compromised requst data",400,$log_name,$worker);
           }
 
         }else{
-            $this->RespondError($validate,400,$log_name);
+            $this->RespondError($validate,400,$log_name,$worker);
         }
 
 
     }
 
-    function ProcessMerchantCreditRequest($req_data,$log_name) {
-	//print_r($xmlp);
-    $pay_array = $this->PrepareRequest($req_data);
-   $validate=$this->validate->ValidateCredit($pay_array);
-   if(empty($validate)){
-    //$verify =$this->ValidateToken($req_data);
-    $verify=1;
-    if($verify==1){
+        function ProcessMerchantCreditRequest($req_data,$log_name,$worker) {
+    	//print_r($xmlp);
+        $pay_array = $this->PrepareRequest($req_data);
+       $validate=$this->validate->ValidateCredit($pay_array);
+       if(empty($validate)){
+        //$verify =$this->ValidateToken($req_data);
+        $verify=1;
+        if($verify==1){
 
-   $stan_array=$this->map->Standardize($pay_array);
-   if(isset($stan_array['error'])==false){
+       $stan_array=$this->map->Standardize($pay_array);
+       if(isset($stan_array['error'])==false){
 
-   $merchant =$this->FindMerchant($stan_array);
-   if(empty($merchant)==false){
-   $stan_array['merchant_id']=$merchant[0]['merchant_id'];;
-   $prefix =$this->GetOperatorByPrefix($stan_array['transaction_account']);
-   if(empty($prefix)==false){
+       $merchant =$this->FindMerchant($stan_array);
+       if(empty($merchant)==false){
+       $stan_array['merchant_id']=$merchant[0]['merchant_id'];;
+       $prefix =$this->GetOperatorByPrefix($stan_array['transaction_account']);
+       if(empty($prefix)==false){
 
-   $stan_array['operator_id']=$prefix[0]['operator_id'];
-  $this->log->LogRequest($log_name,"MerchantModel:  ProcessMerchantCreditRequest ". var_export($merchant,true),2);
-       $rout_extension='credit';
-      $this->MerchantHandler($stan_array,$rout_extension,$log_name);
+       $stan_array['operator_id']=$prefix[0]['operator_id'];
+      $this->log->LogRequest($log_name, $worker."MerchantModel:  ProcessMerchantCreditRequest ". var_export($merchant,true),2);
+           $rout_extension='credit';
+          $this->MerchantHandler($stan_array,$rout_extension,$log_name,$worker);
 
-        }else{
-       $this->RespondError("Operator not supported for ".$stan_array['transaction_account'],401,$log_name);
+            }else{
+           $this->RespondError("Operator not supported for ".$stan_array['transaction_account'],401,$log_name,$worker);
+            }
+
+            }else{
+           $this->RespondError("Mechant Account ".$stan_array['merchant_account']." was not found",401,$log_name,$worker);
+            }
+
+           }else{
+                $this->RespondError($stan_array['error'],401,$log_name,$worker);
+          }
+
+          }else{
+
+               $this->RespondError("Compromised requst data",400,$log_name,$worker);
+          }
+
+           }else{
+                $this->RespondError($validate,400,$log_name,$worker);
+            }
+
+
         }
 
-        }else{
-       $this->RespondError("Mechant Account ".$stan_array['merchant_account']." was not found",401,$log_name);
-        }
 
-       }else{
-            $this->RespondError($stan_array['error'],401,$log_name);
-      }
+        function RespondError($error,$error_code,$log_name,$worker){
+          $response=array();
+          $response["transaction_status"]='failed';
+          $response["status_code"]=$error_code;
+          $response["description"]=$error;
+          $json_resp =json_encode($response);
+          $this->log->LogRequest($log_name, $worker."MerchantModel:  RespondError message ". var_export($json_resp,true),3);
 
-      }else{
+          header('Content-Type: application/json');
+          echo $json_resp;
+          exit();
+           }
 
-           $this->RespondError("Compromised requst data",400,$log_name);
-      }
-
-       }else{
-            $this->RespondError($validate,400,$log_name);
-        }
-
-
-    }
-
-
-    function RespondError($error,$error_code,$log_name){
-      $response=array();
-      $response["transaction_status"]='failed';
-      $response["status_code"]=$error_code;
-      $response["description"]=$error;
-      $json_resp =json_encode($response);
-      $this->log->LogRequest($log_name,"MerchantModel:  RespondError message ". var_export($json_resp,true),3);
-
-      header('Content-Type: application/json');
-      echo $json_resp;
-      exit();
-       }
-
-    function PrepareRequest($paydata) {
-      $map_data =$this->map->ParseJSONParameters($paydata);
-        return $map_data;
-    }
+          function PrepareRequest($paydata) {
+            $map_data =$this->map->ParseJSONParameters($paydata);
+              return $map_data;
+          }
 
 
-          function ProcessCheckStatusRequest($req_data,$log_name){
+          function ProcessCheckStatusRequest($req_data,$log_name,$worker){
 
               $pay_array = $this->PrepareRequest($req_data);
               $validate=$this->validate->ValidateCheckStatus($pay_array);
@@ -216,7 +216,7 @@ class Merchantpayment_Model extends GeneralMerchant {
 
                     }else{
 
-                      $this->RespondError("Compromised requst data",400,$log_name);
+                      $this->RespondError("Compromised requst data",400,$log_name,$worker);
                     }
 
                    }else{
@@ -224,12 +224,12 @@ class Merchantpayment_Model extends GeneralMerchant {
                      $response["description"]=$validate;
                    }
 
-               $this->log->LogRequest($log_name,"Merchant Payment Model:  ProcessCheckStatusRequest  Response". var_export($response,true),2);
+            //   $this->log->LogRequest($log_name, $worker."Merchant Payment Model:  ProcessCheckStatusRequest  Response". var_export($response,true),2);
 
             return $response;
             }
 
-            function ProcessAccountInformationRequest($req_data,$log_name){
+            function ProcessAccountInformationRequest($req_data,$log_name,$worker){
 
               $pay_array = $this->PrepareRequest($req_data);
                $validate=$this->validate->ValidateAccountInformation($pay_array);
@@ -243,7 +243,7 @@ class Merchantpayment_Model extends GeneralMerchant {
                   $merchant =$this->FindMerchant($stan_array);
                   if(empty($merchant)==false){
                   $stan_array['merchant_id']=$merchant[0]['merchant_id'];;
-                  $this->log->LogRequest($log_name,"MerchantModel:  ProcessAccountInformationRequest Merchant ". var_export($prefix,true),2);
+                  $this->log->LogRequest($log_name, $worker."MerchantModel:  ProcessAccountInformationRequest Merchant ". var_export($prefix,true),2);
 
                   $prefix =$this->GetOperatorByPrefix($stan_array['transaction_account']);
                   if(empty($prefix)==false){
@@ -278,7 +278,7 @@ class Merchantpayment_Model extends GeneralMerchant {
 
                 }else{
 
-                    $this->RespondError("Compromised requst data",400,$log_name);
+                    $this->RespondError("Compromised requst data",400,$log_name,$worker);
                 }
 
                 }else{
@@ -287,7 +287,7 @@ class Merchantpayment_Model extends GeneralMerchant {
                 }
 
 
-               $this->log->LogRequest($log_name,"Merchant Payment Model:  ProcessAccountInformationRequest  Response". var_export($response,true),2);
+               $this->log->LogRequest($log_name,$worker."Merchant Payment Model:  ProcessAccountInformationRequest  Response". var_export($response,true),2);
 
             return $response;
             }

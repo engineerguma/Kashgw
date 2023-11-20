@@ -17,9 +17,6 @@ class Model {
     }
 
 
-
-
-
     function PrepareToSaveMerchData($data) {
             $now = date('Y-m-d H:i:s');
 
@@ -31,8 +28,13 @@ class Model {
             $postData['account_number'] = $data['account_number'];
             $postData['transaction_account'] = $data['transaction_account'];
             $postData['transaction_reference_number'] = $data['transaction_reference_number'];
-            $postData['merchant_id'] = $data['merchant_id'];
+            if(isset($data['merchant_id'])){
+              $postData['merchant_id'] = $data['merchant_id'];
+            }
+            if(isset($data['operator_id'])){
             $postData['operator_id'] = $data['operator_id'];
+            }
+
             $postData['transaction_source'] = $data['transaction_source'];
             $postData['transaction_reason'] = $data['transaction_reason'];
             $postData['currency'] = $data['transaction_currency'];
@@ -130,9 +132,9 @@ class Model {
 
 
 
-        function CloseTransaction($log_name,$transaction,$update_data) {
+        function CloseTransaction($log_name,$worker,$transaction,$update_data) {
 
-          $this->log->LogRequest($log_name,"Model:  CloseTransaction ". var_export($update_data,true),2);
+          $this->log->LogRequest($log_name,$worker."Model:  CloseTransaction ". var_export($update_data,true),2);
           $postData =array();
 
           $postData['transaction_status']=$update_data['transaction_status'];
@@ -149,25 +151,25 @@ class Model {
           //print_r($postData);die();
         try{
 
-      //    $this->log->LogRequest($log_name,"Model:  CloseTransaction Data to update for ID ".$transaction['transaction_id']." Data ". var_export($postData,true),2);
+      //    $this->log->LogRequest($log_name,$worker."Model:  CloseTransaction Data to update for ID ".$transaction['transaction_id']." Data ". var_export($postData,true),2);
 
         $return = $this->db->UpdateData('transaction_histories', $postData, "transaction_id = {$transaction['transaction_id']}");
 
         }catch(Exception $e){
-          $this->log->LogRequest($log_name,"Model:  CloseTransaction Exception error  ". var_export($e,true),2);
+          $this->log->LogRequest($log_name,$worker."Model:  CloseTransaction Exception error  ". var_export($e,true),2);
 
         }
 
           }
 
 
-        function SendMerchantCompletedRequest($transaction,$log_name){
+        function SendMerchantCompletedRequest($transaction,$log_name,$worker){
             $extra_headers= [];
-          $this->log->LogRequest($log_name,"Model:  SendMerchantCompletedRequest transaction data ". var_export($transaction,true),2);
+          $this->log->LogRequest($log_name,$worker."Model:  SendMerchantCompletedRequest transaction data ". var_export($transaction,true),2);
 
             $routing = $this->GetMerchantRouting($transaction['merchant_id'],$transaction['transaction_type'].'_callback');
 
-            $this->log->LogRequest($log_name,"Model:  SendMerchantCompletedRequest Routing data ". var_export($routing,true),2);
+            $this->log->LogRequest($log_name,$worker."Model:  SendMerchantCompletedRequest Routing data ". var_export($routing,true),2);
            $post =array();
              if(isset($transaction['operator_reference'])&&$transaction['operator_reference']!=''){
             $post["operator_reference"]=$transaction['operator_reference'];
@@ -196,7 +198,7 @@ class Model {
                }
              }
 
-           $this->log->LogRequest($log_name,"Model:  SendMerchantCompletedRequest ". var_export($post,true),2);
+           $this->log->LogRequest($log_name,$worker."Model:  SendMerchantCompletedRequest ". var_export($post,true),2);
 
               $header= [
                 'Content-Type: application/json',
@@ -206,17 +208,17 @@ class Model {
                       ];
                         $header = array_merge($header,$extra_headers);
             // print_r($header);die();
-            $response_xml = $this->SendMerchByCURL($routing[0]['routing_url'],json_encode($post),$header,$log_name);
+            $response_xml = $this->SendMerchByCURL($routing[0]['routing_url'],json_encode($post),$header,$log_name,$worker);
              echo $response_xml;
-             $this->log->LogRequest($log_name,"Model:  SendMerchantCompletedRequest  Exited Initial Request",3);
+             $this->log->LogRequest($log_name,$worker."Model:  SendMerchantCompletedRequest  Exited Initial Request",3);
 
         }
 
 
 
-            function SendMerchByCURL($url, $post_data,$header,$log_name) {
+            function SendMerchByCURL($url, $post_data,$header,$log_name,$worker) {
 
-              $this->log->LogRequest($log_name,"Model:  SendMerchByCURL to .".$url."  data to send". var_export($post_data,true),2);
+              $this->log->LogRequest($log_name,$worker."Model:  SendMerchByCURL to .".$url."  data to send". var_export($post_data,true),2);
 
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_HEADER, 0);
@@ -231,16 +233,16 @@ class Model {
                 $content = curl_exec($ch);
                 if (curl_errno($ch) > 0) {
                  $error= curl_error($ch);
-                 $this->log->LogRequest($log_name,"Model: SendMerchByCURL CURL ERROR  ". var_export($error,true),2);
+                 $this->log->LogRequest($log_name,$worker."Model: SendMerchByCURL CURL ERROR  ". var_export($error,true),2);
                  }
         		    curl_close($ch);
-                $this->log->LogRequest($log_name,"Model:  Response Data  ". var_export($content,true),2);
+                $this->log->LogRequest($log_name,$worker."Model:  Response Data  ". var_export($content,true),2);
 
                 return $content;
             }
 
 
-            function WriteGeneralXMLFile($routing, $trans_data,$log_name) {
+            function WriteGeneralXMLFile($routing, $trans_data,$log_name,$worker) {
         	     $template = $routing['request_template'];
                    $trans_data['routing']=$routing;
 
@@ -248,16 +250,16 @@ class Model {
                 require($req_template);
                 $filled_xml = ${$template};
 
-                $this->log->LogRequest($log_name,"Model:  WriteGeneralXMLFile  ". var_export($filled_xml,true),2);
+                $this->log->LogRequest($log_name,$worker."Model:  WriteGeneralXMLFile  ". var_export($filled_xml,true),2);
 //print_r($filled_xml);die();
                 return $filled_xml;
             }
 
 
-            function SendByGetCURL($url, $header,$log_name) {
+            function SendByGetCURL($url, $header,$log_name,$worker) {
 
 
-                      $this->log->LogRequest($log_name,"Model:  SendByGetCURL  beginning url ".$url,2);
+                      $this->log->LogRequest($log_name,$worker."Model:  SendByGetCURL  beginning url ".$url,2);
                       $ch = curl_init();
                       curl_setopt($ch, CURLOPT_HEADER, 0);
                       curl_setopt($ch, CURLOPT_VERBOSE, 0);
@@ -271,7 +273,7 @@ class Model {
                       $content = curl_exec($ch);
                         if (curl_errno($ch) > 0) {
                          $content= curl_error($ch);
-                         $this->log->LogRequest($log_name,$content,2);
+                         $this->log->LogRequest($log_name,$worker.$content,2);
                          }
                 		    curl_close($ch);
 
@@ -280,11 +282,11 @@ class Model {
 
 
 
-            function SendByCURL($url, $header,$request,$log_name) {
+            function SendByCURL($url, $header,$request,$log_name,$worker) {
 
                   //  $momo_genID = date("ymdhis");
 
-                      $this->log->LogRequest($log_name,"Model:  SendByCURL  beginning url ".$url." Xml". var_export($request,true),2);
+                      $this->log->LogRequest($log_name,$worker."Model:  SendByCURL  beginning url ".$url." Xml". var_export($request,true),2);
                       $ch = curl_init();
                       curl_setopt($ch, CURLOPT_HEADER, 0);
                       curl_setopt($ch, CURLOPT_VERBOSE, 0);
@@ -300,7 +302,7 @@ class Model {
                       $content = curl_exec($ch);
                         if (curl_errno($ch) > 0) {
                          $content= curl_error($ch);
-                         $this->log->LogRequest($log_name,$content,2);
+                         $this->log->LogRequest($log_name,$worker.$content,2);
                          }
                 		    curl_close($ch);
 
@@ -343,6 +345,15 @@ class Model {
 
     		return $statuscode;
     		}
+
+
+
+
+            function encrypt(array $payload)
+            {
+                $encrypted = openssl_encrypt(json_encode($payload), 'DES-EDE3', FLUTTER_ENCRYPT_KEY, OPENSSL_RAW_DATA);
+                return base64_encode($encrypted);
+             }
 
 
       }
