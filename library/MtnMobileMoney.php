@@ -7,8 +7,8 @@ class MtnMobileMoney extends Model {
     }
 
 
-    function ProcessAirtelRequests($transaction,$routing,$log_name,$worker) {
-
+    function ProcessMTNRequests($transaction,$routing,$log_name,$worker) {
+            $response = '';
       $this->log->LogRequest($log_name,$worker."OperatorRequests:  ProcessMTNRequests  ". var_export($transaction,true),2);
         $xml = $this->WriteGeneralXMLFile($routing, $transaction,$log_name,$worker);
 
@@ -18,9 +18,14 @@ class MtnMobileMoney extends Model {
         $certificate = $this->GetSSLInfo($transaction['operator_id']);
        $result = $this->SendXMLByCURL($routing['routing_url'],$header,$xml,$log_name,$worker,$certificate[0]);
        $this->log->LogRequest($log_name,$worker."OperatorRequests:  SendXMLByCURL response ". var_export($result,true),2);
-
+       $validatexml = $this->isXml($result);
+       if($validatexml==true){
         $array= $this->map->FormatXMLTOArray($result);
          $response =$this->HandleOperatorResponse($transaction,$array);
+       }else{
+         //unknown_status
+         $response['status_code'] = 'network_error';
+       }
         return $response;
     }
 

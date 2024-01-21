@@ -317,7 +317,7 @@ class Model {
     		$statuscode['status_code']=200;
       }else if(strtolower($status)=='failed'){
     		$statuscode['transaction_status']='failed';
-    		$statuscode['status_code']='general_error';
+    		$statuscode['status_code']='transaction_not_approved';
        }else if(strtolower($status)=='pending'){
           $statuscode['transaction_status']='pending';
       		$statuscode['status_code']=202;
@@ -340,7 +340,7 @@ class Model {
       		$statuscode['status_code']='transactiom_reference_not_foound';
     		}else{
           $statuscode['transaction_status']='failed';
-      		$statuscode['status_code']='general_error';
+      		$statuscode['status_code']='unknown_status';
     		}
 
     		return $statuscode;

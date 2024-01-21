@@ -20,7 +20,10 @@ class Cron_Model extends GeneralMerchant {
                  if(empty($routing)==false){
                   $routing=$routing[0];
                   $routing['status']=1;
-                 $operator_response= $this->ProcessCallOperator($value,$routing,$log_name,$worker);
+            $operator_response= $this->ProcessCallOperator($value,$routing,$log_name,$worker);
+
+            if(isset($operator_response['status_code'])&&strtolower($operator_response['status_code'])!='network_error'){
+
                 //close transaction
                 $this->log->LogRequest($log_name,$worker."CronModel::ProcessCallOperator response ".var_export($operator_response, true), 2, 2);
 
@@ -29,6 +32,7 @@ class Cron_Model extends GeneralMerchant {
                  $transact = $this->GetTransaction($value['transaction_id']);
 
               $this->log->LogRequest($log_name,$worker."CronModel::PrepareTOCloseTransaction closed transaction ".var_export($transact[0], true), 2, 3);
+
               if($transact[0]['transaction_source']=='ussd'){
                 if($transact[0]['transaction_status']=='completed'){
                   //change routing_type to posting
@@ -38,15 +42,22 @@ class Cron_Model extends GeneralMerchant {
               }else{
 
                $this->SendMerchantCompletedRequest($transact[0],$log_name,$worker);
-               
-                }
 
                 }
 
                 }
+
+              }else{ //end of network_error vheck
 
 
               }
+
+
+
+                }
+
+
+              } //end of foreach
 
            }
              exit();

@@ -8,7 +8,7 @@ class OperatorRequests extends Model {
 
 
     function ProcessMTNRequests($transaction,$routing,$log_name,$worker) {
-
+        $response = '';
     //  $this->log->LogRequest($log_name,$worker."OperatorRequests:  ProcessMTNRequests  ". var_export($transaction,true),2);
         $xml = $this->WriteGeneralXMLFile($routing, $transaction,$log_name,$worker);
 
@@ -18,9 +18,16 @@ class OperatorRequests extends Model {
         $certificate = $this->GetSSLInfo($transaction['operator_id']);
        $result = $this->SendXMLByCURL($routing['routing_url'],$header,$xml,$log_name,$worker,$certificate[0]);
       // $this->log->LogRequest($log_name,$worker."OperatorRequests:  ProcessMTNRequests  SendXMLByCURL response ". var_export($result,true),2);
-
+        $validatexml = $this->isXml($result);
+        if($validatexml==true){
         $array= $this->map->FormatXMLTOArray($result);
          $response =$this->HandleOperatorResponse($transaction,$array,$log_name,$worker);
+       }else{
+         //unknown_status
+         $response['status_code'] = 'network_error';
+         $response['status_description']="Communication failure to payment operator";
+
+       }
         return $response;
     }
 
@@ -105,7 +112,18 @@ class OperatorRequests extends Model {
         return $combined;
         }
 
+        function isXml(string $value): bool
+        {
+            $prev = libxml_use_internal_errors(true);
 
+            $doc = simplexml_load_string($value);
+            $errors = libxml_get_errors();
+
+            libxml_clear_errors();
+            libxml_use_internal_errors($prev);
+
+            return false !== $doc && empty($errors);
+          }
 
               function SendXMLByCURL($url,$header,$xml,$log_name,$worker,$cert=false) {
                   //print_r($cert);die();
