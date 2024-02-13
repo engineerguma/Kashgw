@@ -20,7 +20,7 @@ class Mtnrwanda extends Controller {
 
     function DebitCompleted($req=false){
 
-        $worker = "Thread_ID_".getmypid()."::";
+        $worker = "Thread_ID_".getmypid().rand(10000 ,99999)."::";
         $xml_request = file_get_contents('php://input');
         if(!empty($xml_request)){
 
@@ -55,7 +55,7 @@ class Mtnrwanda extends Controller {
               session_write_close();
           }
 
-        $req =$this->model->ProcessDebitCompletedRequest($xml_request,'req_from_mtn');
+        $req =$this->model->ProcessDebitCompletedRequest($xml_request,'req_from_mtn',$worker);
         }else{
           $general=array('status'=>403,
                          'message'=>'Seems you are not authorized');

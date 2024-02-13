@@ -19,7 +19,7 @@ class Merchantpayment extends Controller {
  	   if(json_decode($jsonrequest) != NULL){
         $postdata = json_decode($jsonrequest,true);
         $postdata['request']='debit';
-        $worker = "Thread_ID_".getmypid()."::";
+        $worker = "Thread_ID_".getmypid().rand(10000 ,99999)."::";
         $log_file_name = $this->model->log->LogRequest('req_from_merchant',$worker ."Starting Debit". var_export($jsonrequest,true),1);
         $this->model->ProcessMerchantDebitRequest($postdata, 'req_from_merchant',$worker);
 	     }else{
@@ -36,7 +36,7 @@ class Merchantpayment extends Controller {
          	   if(json_decode($jsonrequest) != NULL){
                 $postdata = json_decode($jsonrequest,true);
                 $postdata['request']='debit';
-                $worker = "Thread_ID_".getmypid()."::";
+                $worker = "Thread_ID_".getmypid().rand(10000 ,99999)."::";
                 $log_file_name = $this->model->log->LogRequest('req_from_ussd',$worker ."Starting Debit". var_export($jsonrequest,true),1);
                 $this->model->ProcessUSSDDebitRequest($postdata, 'req_from_ussd',$worker);
         	     }else{
@@ -52,7 +52,7 @@ class Merchantpayment extends Controller {
  	   if(json_decode($jsonrequest) != NULL){
         $postdata = json_decode($jsonrequest,true);
         $postdata['request']='credit';
-        $worker = "Thread_ID_".getmypid()."::";
+        $worker = "Thread_ID_".getmypid().rand(10000 ,99999)."::";
         $log_file_name = $this->model->log->LogRequest('req_from_merchant',$worker ."Starting Credit". var_export($jsonrequest,true),1);
         $this->model->ProcessMerchantCreditRequest($postdata,'req_from_merchant',$worker);
 	   }else{
@@ -68,7 +68,7 @@ class Merchantpayment extends Controller {
      	   if(json_decode($jsonrequest) != NULL){
             $postdata = json_decode($jsonrequest,true);
             $postdata['request']='kyc';
-            $worker = "Thread_ID_".getmypid()."::";
+            $worker = "Thread_ID_".getmypid().rand(10000 ,99999)."::";
             $log_file_name = $this->model->log->LogRequest('req_from_merchant', $worker."Starting Credit". var_export($jsonrequest,true),1);
             $this->model->ProcessAccountInformationRequest($postdata,'req_from_merchant',$worker);
     	   }else{
@@ -83,7 +83,7 @@ class Merchantpayment extends Controller {
           $jsonrequest = file_get_contents('php://input');
    	     if(json_decode($jsonrequest) != NULL){
           $json_data = json_decode($jsonrequest,true);
-            $worker = "Thread_ID_".getmypid()."::";
+            $worker = "Thread_ID_".getmypid().rand(10000 ,99999)."::";
          //$this->model->log->LogRequest('req_from_merchant',$jsonrequest,1);
           $response=$this->model->ProcessCheckStatusRequest($json_data, 'req_from_merchant',$worker);
 

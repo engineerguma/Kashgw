@@ -22,7 +22,7 @@ class Airtelrwanda extends Controller {
 
         $request = file_get_contents('php://input');
         if(!empty($request)){
-        $worker = "Thread_ID_".getmypid()."::";
+          $worker = "Thread_ID_".getmypid().rand(10000 ,99999)."::";
         $this->model->log->LogRequest('req_from_airtel',$worker."Airtelrwanda:  DebitCompleted data ". var_export($request,true),1);
         $req =$this->model->ProcessDebitCompletedRequest($request,'req_from_airtel',$worker);
       }else{
