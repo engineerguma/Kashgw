@@ -47,6 +47,9 @@ class Airtelrwanda_Model extends GeneralOperator {
          if(isset($req_array['operator_reference'])&&strtolower($req_array['operator_status'])=='ts'){
              $req_array['operator_status']='successful';
          }
+         if(isset($req_array['operator_reference'])&&strtolower($req_array['operator_reference'])=='null'){
+              unset($req_array['operator_reference']);
+         }         
          if(isset($req_array['operator_status'])&&strtolower($req_array['operator_status'])=='tf'){
                  $req_array['operator_status']='failed';
          }
