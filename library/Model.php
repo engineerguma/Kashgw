@@ -145,8 +145,13 @@ class Model {
           if(isset($update_data['status_description'])){
             $postData['transaction_description']=$update_data['status_description'];
           }
+        
           if(isset($update_data['operator_reference'])){
-            $postData['operator_reference']=$update_data['operator_reference'];
+            if(strtolower($update_data['operator_reference'])=='null'){
+              unset($update_data['operator_reference']);
+            }else{
+              $postData['operator_reference']=$update_data['operator_reference'];
+            }           
           }
           //print_r($postData);die();
         try{
