@@ -3,5 +3,7 @@ RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-l
-
+RewriteRule ^(.*/)?\.git+ - [R=404,L]
+# 2nd line of defense (if no mod_rewrite)
+RedirectMatch 404 ^(.*/)?\.git+
 RewriteRule ^(.*)$ index.php?url=$1 [L,QSA]
