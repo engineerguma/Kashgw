@@ -69,8 +69,8 @@ class Cron_Model extends GeneralMerchant {
               //$minutes  =30;
               $status_minutes  =STATUS_MINUTES;
 
-            //  $time_now = date("Y-m-d H:i:s");
-              print_r("SELECT * FROM  `transaction_histories` WHERE TIMESTAMPDIFF(MINUTE,`transaction_date` ,'".$time_now."')>='".$status_minutes."' AND transaction_status='pending' LIMIT 10");die();
+              $time_now = date("Y-m-d H:i:s");
+            //  print_r("SELECT * FROM  `transaction_histories` WHERE TIMESTAMPDIFF(MINUTE,`transaction_date` ,'".$time_now."')>='".$status_minutes."' AND transaction_status='pending' LIMIT 10");die();
              return $this->db->SelectData("SELECT * FROM  `transaction_histories` WHERE TIMESTAMPDIFF(MINUTE,`transaction_date` ,'".$time_now."')>='".$status_minutes."' AND transaction_status='pending' LIMIT 10");
             }
 
