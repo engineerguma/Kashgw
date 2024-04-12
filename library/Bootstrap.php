@@ -72,7 +72,7 @@ class Bootstrap {
 
     private function _error() {
         require 'controllers/error.php';
-        $this->_controller = new Error();
+        $this->_controller = new Errors();
         $this->_controller->index($this->_errorID, $this->_errorMsgDetail);
         return false;
     }
