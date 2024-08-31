@@ -58,7 +58,7 @@ $this->log->TraceLog($log_name,$worker.'JWTauth:  ValidateToken  signature provi
   $this->log->TraceLog($log_name,$worker.'JWTauth:  ValidateToken  payload provided  '. var_export($payload,true),2);
 
 //	$signature = hash_hmac('SHA512', "$base64_url_header.$base64_url_payload", $this->base64url_decode($secret), true);
-	$signature = hash_hmac(JWT_ALGO, "$base64_url_header.$base64_url_payload", $secret, true);
+	$signature = hash_hmac(JWT_ALGO, "$base64_url_header.$base64_url_payload", base64_decode($secret), true);
 
   $this->log->TraceLog($log_name,$worker.'JWTauth:  Signature before encoding '. var_export($signature,true),2);
 
