@@ -311,4 +311,63 @@ class Merchantpayment_Model extends GeneralMerchant {
     }
 
 
+
+
+    function AuthenticateAccess($log_name,$worker){
+
+      if(isset($_SERVER['HTTP_AUTHORIZATION'])){
+    
+        if (preg_match('/Bearer\s(\S+)/', $_SERVER['HTTP_AUTHORIZATION'], $matches)) {
+    
+          $matches = $matches[1];
+        }else{
+          $matches = $_SERVER['HTTP_AUTHORIZATION'];
+    
+        }
+      if($matches){
+      $jwt = $matches;
+    
+      $this->jwtToken = new JWTAuthenticate();
+    $is_jwt_valid = $this->jwtToken->ValidateToken($log_name,$jwt,MERC_JWT_SECRET,$worker);
+  
+      if($is_jwt_valid === 'TRUE') {
+      //  echo 'Continue Processing';
+      // exit;
+            } else {
+            // 'Invalid Token';
+              $message ='Access Unauthorized / Invalid Token';
+              $this->log->LogRequest($log_name,$worker.'MerchantPaymentModel::AuthenticateAccess::ValidateToken : ' . $message, 3);
+              header('HTTP/1.0 401 Unauthorized');
+              echo $message;
+    
+    
+              exit;
+    
+            }
+    
+          }else{
+    
+            $message ='Access Unauthorized / No Authorization found';
+    
+            $this->log->LogRequest($log_name, $worker.'MerchantPaymentModel::AuthenticateAccess:: Authorization header value is empty: '. $message, 3);
+    
+            header('HTTP/1.0 401 Unauthorized');
+            echo $message;
+            exit;
+    
+          }
+    
+        }else{
+    
+          $message ='Access Unauthorized / No Authorization found 2';
+          $this->log->LogRequest($log_name, $worker.'MerchantPaymentModel::AuthenticateAccess:: Authorization header value is empty: '. $message, 3);
+    
+    
+            header('HTTP/1.0 401 Unauthorized');
+            echo $message;
+            exit;
+    
+          }
+    }
+
 }

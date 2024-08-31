@@ -24,6 +24,7 @@ class Mapping {
         'email' => 'email',
         'expiry_month' => 'expiry_month',
         'expiry_year' => 'expiry_year',
+        'exp' => 'exp', //for JWT
     );
 
     public $_match_up_operator_params = array(

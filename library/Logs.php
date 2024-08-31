@@ -26,7 +26,23 @@ class Logs {
 
     }
 
+    function TraceLog($fl, $log, $lv, $id = false) {
+        $filext = date('Y_m_d');
+		$logtofile=null;
+		$todays_folder = 'systemlog/t_log/'.$fl.'/' . date('Y_m');
+        $filename = $todays_folder.'/' . $fl . '_' . $filext . '.txt';
 
+	    if (is_dir($todays_folder)) {
+            //print_r("Is folder");die();
+	    $this->PrepareLog($filename,$log, $lv, $id);
+        } else {
+        //  print_r("not folder");die();
+
+           mkdir($todays_folder,0777, true);
+	     $this->PrepareLog($filename,$log, $lv, $id);
+        }
+
+    }
 
     function PrepareLog($file_name,$log, $level, $id = false) {
 

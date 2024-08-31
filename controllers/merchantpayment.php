@@ -20,6 +20,8 @@ class Merchantpayment extends Controller {
         $postdata = json_decode($jsonrequest,true);
         $postdata['request']='debit';
         $worker = "Thread_ID_".getmypid().rand(10000 ,99999)."::";
+        $this->model->log->TraceLog('req_from_merchant',$worker.'AirtelMoney::Paybill Headers: ' . var_export($this->model->getRequestHeaders(), true), 2);
+        $req =$this->model->AuthenticateAccess('req_from_merchant',$worker);  
         $log_file_name = $this->model->log->LogRequest('req_from_merchant',$worker ."Starting Debit". var_export($jsonrequest,true),1);
         $this->model->ProcessMerchantDebitRequest($postdata, 'req_from_merchant',$worker);
 	     }else{
@@ -37,6 +39,8 @@ class Merchantpayment extends Controller {
                 $postdata = json_decode($jsonrequest,true);
                 $postdata['request']='debit';
                 $worker = "Thread_ID_".getmypid().rand(10000 ,99999)."::";
+                $this->model->log->TraceLog('req_from_ussd',$worker.'AirtelMoney::Paybill Headers: ' . var_export($this->model->getRequestHeaders(), true), 2);               
+                $req =$this->model->AuthenticateAccess('req_from_ussd',$worker);                  
                 $log_file_name = $this->model->log->LogRequest('req_from_ussd',$worker ."Starting Debit". var_export($jsonrequest,true),1);
                 $this->model->ProcessUSSDDebitRequest($postdata, 'req_from_ussd',$worker);
         	     }else{
@@ -53,6 +57,8 @@ class Merchantpayment extends Controller {
         $postdata = json_decode($jsonrequest,true);
         $postdata['request']='credit';
         $worker = "Thread_ID_".getmypid().rand(10000 ,99999)."::";
+        $this->model->log->TraceLog('req_from_merchant',$worker.'AirtelMoney::Paybill Headers: ' . var_export($this->model->getRequestHeaders(), true), 2);               
+        $req =$this->model->AuthenticateAccess('req_from_merchant',$worker);         
         $log_file_name = $this->model->log->LogRequest('req_from_merchant',$worker ."Starting Credit". var_export($jsonrequest,true),1);
         $this->model->ProcessMerchantCreditRequest($postdata,'req_from_merchant',$worker);
 	   }else{
@@ -69,6 +75,7 @@ class Merchantpayment extends Controller {
             $postdata = json_decode($jsonrequest,true);
             $postdata['request']='kyc';
             $worker = "Thread_ID_".getmypid().rand(10000 ,99999)."::";
+            $req =$this->model->AuthenticateAccess('req_from_merchant',$worker);  
             $log_file_name = $this->model->log->LogRequest('req_from_merchant', $worker."Starting Credit". var_export($jsonrequest,true),1);
             $this->model->ProcessAccountInformationRequest($postdata,'req_from_merchant',$worker);
     	   }else{
@@ -85,6 +92,7 @@ class Merchantpayment extends Controller {
           $json_data = json_decode($jsonrequest,true);
             $worker = "Thread_ID_".getmypid().rand(10000 ,99999)."::";
          //$this->model->log->LogRequest('req_from_merchant',$jsonrequest,1);
+         $req =$this->model->AuthenticateAccess('req_from_merchant',$worker);  
           $response=$this->model->ProcessCheckStatusRequest($json_data, 'req_from_merchant',$worker);
 
           $json_resp=json_encode($response);

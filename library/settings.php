@@ -14,6 +14,7 @@ define('DB_NAME'  ,$conf['datastore']['dbname']);
 
 
 define('CERT_PATH', $conf['security']['cert_store']);
+define('JWT_ALGO', $conf['security']['jwt_algo']);
 
 define('LOG_DIR', 'systemlog/');
 define('EXECUTION_LOG', 'systemlog/tmp/');
@@ -21,6 +22,11 @@ define('EXECUTION_LOG', 'systemlog/tmp/');
 define('HASH_ALGO', 'sha256');
 
 define('STATUS_MINUTES',$conf['limits']['status_check_minutes']);
+
+
+define('MERC_JWT_SECRET',$conf['MERC_AUTH']['auth_secret']);
+define('MERC_JWT_SUBJECT',$conf['MERC_AUTH']['auth_sub']);
+define('MERC_JWT_ISSUER',$conf['MERC_AUTH']['auth_iss']);
 
 define('AM_KEY',$conf['am']['key']);
 define('SUBJECT',$conf['am']['subject']);
@@ -42,6 +48,6 @@ define('COUNTRY',$conf['limits']['country']);
 define('CURRENCY',$conf['limits']['currency']);
 
 
-define('FLUTTER_CHARGE_URL',$conf['flutter']['charge_url']);
-define('FLUTTER_ENCRYPT_KEY',$conf['flutter']['encrypy_key']);
-define('FLUTTER_CHARGE_SEC',$conf['flutter']['secret_key']);
+#define('FLUTTER_CHARGE_URL',$conf['flutter']['charge_url']);
+#define('FLUTTER_ENCRYPT_KEY',$conf['flutter']['encrypy_key']);
+#define('FLUTTER_CHARGE_SEC',$conf['flutter']['secret_key']);
