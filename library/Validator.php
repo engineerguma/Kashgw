@@ -37,7 +37,7 @@ class Validator{
 
  function ValidateDebit($data){
    $required = array();
-   $required['token'] = 'required';
+   //$required['token'] = 'required';
   // $required['payment_operator'] = 'required';
    $required['transaction_amount'] = 'required';
    $required['account_number'] = 'required';
@@ -53,7 +53,7 @@ class Validator{
 
  function ValidateCredit($data){
    $required = array();
-   $required['token'] = 'required';
+  // $required['token'] = 'required';
   // $required['payment_operator'] = 'required';
    $required['transaction_amount'] = 'required';
    $required['account_number'] = 'required';
