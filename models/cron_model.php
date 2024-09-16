@@ -21,6 +21,9 @@ class Cron_Model extends GeneralMerchant {
             if(isset($operator_response['status_code'])&&strtolower($operator_response['status_code'])!='network_error'){
 
                 //close transaction
+                if(isset($operator_response['operator_reference'])&&strtolower($operator_response['operator_reference'])=='na'){
+                  unset($operator_response['operator_reference']);
+                }
                 $this->log->LogRequest($log_name,$worker."CronModel::ProcessCallOperator response ".var_export($operator_response, true), 2, 2);
 
                  if(isset($operator_response['transaction_status'])&&strtolower($operator_response['transaction_status'])!='pending'){
