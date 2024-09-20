@@ -320,7 +320,7 @@ class Model {
     		if(strtolower($status)=='successful'){
     		$statuscode['transaction_status']='completed';
     		$statuscode['status_code']=200;
-      }else if(strtolower($status)=='failed'){
+        }else if(strtolower($status)=='failed'){
     		$statuscode['transaction_status']='failed';
     		$statuscode['status_code']='transaction_not_approved';
        }else if(strtolower($status)=='pending'){
@@ -331,7 +331,7 @@ class Model {
       		$statuscode['status_code']='balance_insufficient';
     		}else if(strtolower($status)=='not_enough_funds'){
           $statuscode['transaction_status']='failed';
-      		$statuscode['status_code']='not_enough_funds';
+      		$statuscode['status_code']='balance_insufficient';
     		}else if(strtolower($status)=='authorization_sender_account_not_active'){
           $statuscode['transaction_status']='failed';
       		$statuscode['status_code']='account_not_active';

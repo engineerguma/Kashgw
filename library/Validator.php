@@ -71,7 +71,6 @@ class Validator{
 
  function ValidateCheckStatus($data){
    $required = array();
-   $required['token'] = 'required';
    $required['transaction_account'] = 'required';
    $required['transaction_reference_number'] = 'required';
    $required['merchant_account'] = 'required';
