@@ -8,7 +8,7 @@ class OperatorRequests extends Model {
 
 
     function ProcessMTNRequests($transaction,$routing,$log_name,$worker) {
-        $response = '';
+        $response = array();
     //  $this->log->LogRequest($log_name,$worker."OperatorRequests:  ProcessMTNRequests  ". var_export($transaction,true),2);
         $xml = $this->WriteGeneralXMLFile($routing, $transaction,$log_name,$worker);
 
@@ -17,15 +17,17 @@ class OperatorRequests extends Model {
       // $array =array('cert_key'=>$routing['cert_key'],'ca_authority'=>$routing['ca_authority']);
         $certificate = $this->GetSSLInfo($transaction['operator_id']);
        $result = $this->SendXMLByCURL($routing['routing_url'],$header,$xml,$log_name,$worker,$certificate[0]);
-      // $this->log->LogRequest($log_name,$worker."OperatorRequests:  ProcessMTNRequests  SendXMLByCURL response ". var_export($result,true),2);
+       $this->log->LogRequest($log_name,$worker."OperatorRequests:  ProcessMTNRequests  SendXMLByCURL response ". var_export($result,true),2);
         $validatexml = $this->isXml($result);
+       // print_r($validatexml);die();
         if($validatexml==true){
         $array= $this->map->FormatXMLTOArray($result);
          $response =$this->HandleOperatorResponse($transaction,$array,$log_name,$worker);
        }else{
          //unknown_status
          $response['status_code'] = 'network_error';
-         $response['status_description']="Communication failure to payment operator";
+         $response['transaction_status']='failed';
+         $response['status_description'] = "Communication failure to payment operator";
 
        }
         return $response;

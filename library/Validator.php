@@ -5,7 +5,7 @@ class Validator{
 
  function ValidateUSSDDebit($data){
    $required = array();
-   $required['token'] = 'required';
+   //$required['token'] = 'required';
    $required['transaction_amount'] = 'required';
    $required['account_number'] = 'required';
    $required['transaction_account'] = 'required';
