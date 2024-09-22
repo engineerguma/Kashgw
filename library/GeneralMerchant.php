@@ -42,7 +42,7 @@ class GeneralMerchant extends Model {
         //Get The Transaction For Future Use:
         $transaction = $this->GetTransaction($trans_id);
         $this->log->LogRequest($log_name,$worker."GeneralMerchant:  Transaction record  ". var_export($transaction,true),2);
-     
+    /* */
       $pending_resp=$this->PrepareMerchantResponse($transaction[0]);
       while(ob_get_level())ob_end_clean();
       ignore_user_abort();
@@ -69,7 +69,7 @@ class GeneralMerchant extends Model {
             session_write_close();
         }
 
-          sleep(3);  
+          sleep(3);   
         //Make Request To Merchant Application & Process the Merchant Results
            $trans_data=array_merge($transaction[0],$post_data);
         $operator_response = $this->ProcessOperatorRequest($trans_data,$log_name,$worker);

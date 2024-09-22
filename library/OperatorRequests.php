@@ -18,8 +18,8 @@ class OperatorRequests extends Model {
         $certificate = $this->GetSSLInfo($transaction['operator_id']);
        $result = $this->SendXMLByCURL($routing['routing_url'],$header,$xml,$log_name,$worker,$certificate[0]);
        $this->log->LogRequest($log_name,$worker."OperatorRequests:  ProcessMTNRequests  SendXMLByCURL response ". var_export($result,true),2);
-        $validatexml = $this->isXml($result);
-       // print_r($validatexml);die();
+        $validatexml = $this->isXml($result,$log_name,$worker);
+        //print_r($validatexml);die();
         if($validatexml==true){
         $array= $this->map->FormatXMLTOArray($result);
          $response =$this->HandleOperatorResponse($transaction,$array,$log_name,$worker);
@@ -105,7 +105,7 @@ class OperatorRequests extends Model {
             $error_codes=$this->MatchOPeratorRespcodes($operator_resp['operator_status']);
             $combined =array_merge($operator_resp,$error_codes);
           }else{
-    $this->log->LogRequest($log_name,$worker."HandleOperatorResponse:  No operator status  ". var_export($operator_resp,true),2);
+    $this->log->LogRequest($log_name,$worker."OperatorRequests::HandleOperatorResponse:  No operator status  ". var_export($operator_resp,true),2);
            $combined = $operator_resp;
 
             }
@@ -114,16 +114,19 @@ class OperatorRequests extends Model {
         return $combined;
         }
 
-        function isXml(string $value): bool
+        function isXml(string $value,$log_name,$worker): bool
         {
             $prev = libxml_use_internal_errors(true);
 
             $doc = simplexml_load_string($value);
             $errors = libxml_get_errors();
+       //     $this->log->LogRequest($log_name,$worker."OperatorRequests::isXml: simplexml_load_string ". var_export($doc,true),2);
+          
+       //     $this->log->LogRequest($log_name,$worker."OperatorRequests::isXml: libxml_get_errors ". var_export($errors,true),2);
 
             libxml_clear_errors();
             libxml_use_internal_errors($prev);
-
+                                                                                                                                                                 
             return false !== $doc && empty($errors);
           }
 
