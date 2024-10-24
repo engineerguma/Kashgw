@@ -58,7 +58,7 @@ class MtnMobileMoney extends Model {
                 $momo_genID = date("ymdhis");
                 /*  $content= '<?xml version="1.0" encoding="UTF-8"?> <ns0:debitresponse xmlns:ns0="http://www.ericsson.com/em/emm/financial/v1_0"><transactionid>'.$momo_genID.'</transactionid><status>PENDING</status></ns0:debitresponse>';
                      return $content;  */
-                $this->log->LogRequest($log_name,$worker"OperatorRequests:  SendByCURL  beginning url ".$url." Xml". var_export($xml,true),2);
+                $this->log->LogRequest($log_name,$worker."OperatorRequests:  SendByCURL  beginning url ".$url." Xml". var_export($xml,true),2);
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_HEADER, 0);
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
