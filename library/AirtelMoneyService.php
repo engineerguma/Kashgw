@@ -33,7 +33,7 @@ class AirtelMoneyService extends Model {
         $error_codes=$this->MatchAirtelRespcodes($operator_resp['operator_status']);
         $response =array_merge($operator_resp,$error_codes);
       }else{
-        $this->log->LogRequest($log_name,$worker."HandleOperatorResponse::AirtelMoneyService:  No Operator Status captured ". var_export($request,true),2);
+        $this->log->LogRequest($log_name,$worker."HandleOperatorResponse::AirtelMoneyService:  No Operator Status captured ". var_export($operator_resp,true),2);
         $response = $operator_resp;
 
         }
