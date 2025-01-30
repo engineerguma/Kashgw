@@ -16,7 +16,7 @@ class GeneralOperator extends Model {
         //Wrap Up Transaction Processing And Prepare & Send Service Provider Response:
         $this->CloseTransaction($log_name,$worker,$transaction[0],$post_data);
         $transaction = $this->GetTransaction($transaction[0]['transaction_id']);
-        if($transaction[0]['transaction_source']=='ussd'){
+        if($transaction[0]['transaction_source']=='ussd_app'){
           if($transaction[0]['transaction_status']=='completed'){
             //change routing_type to posting
           $this->SendMerchantCompletedRequest($transaction[0],$log_name,$worker);
