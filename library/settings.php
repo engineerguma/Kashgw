@@ -1,8 +1,12 @@
 <?php
 
 $conf = parse_ini_file("config/conf.ini",true);
+#$mercs = parse_ini_file("config/mercs.ini",true);
+
 //print_r($conf);die();
 define('URL'  ,$conf['url_connect']['url']);
+#define('MERCS'  ,$mercs);
+
 
 
 define('DB_TYPE'  ,$conf['datastore']['dtype']);

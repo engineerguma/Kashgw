@@ -3,7 +3,7 @@
 class Model {
 
     function __construct() {
-        $this->db = new Databaseconfig();
+        $this->db = Databaseconfig::getInstance();
         $this->log = new Logs();
         $this->validate = new Validator();
         $this->map = new Mapping();
@@ -145,7 +145,7 @@ class Model {
           if(isset($update_data['status_description'])){
             $postData['transaction_description']=$update_data['status_description'];
           }
-        
+
           if(isset($update_data['operator_reference'])){
             if(strtolower($update_data['operator_reference'])=='null'){
               unset($update_data['operator_reference']);
